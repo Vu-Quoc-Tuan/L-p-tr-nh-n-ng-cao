@@ -61,30 +61,6 @@ void SDLWin::quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 
 //EXTENSION
 
-//bool Extension::WasShot()
-//{
-//
-//}
-
-//void Extension::upgrade_bullet(item & box, Player & ngchoi)
-//{
-//    SDL_Rect hop=box.get_rect_();
-//    SDL_Rect nguoi1=ngchoi.get_rect_player1();
-//    SDL_Rect nguoi2=ngchoi.get_rect_player2();
-//
-//    if(detail::check_collision(hop,nguoi1))
-//    {
-//        ngchoi.set_type_bullet1(box.get_type());
-//        //xoas hoopj
-//    }
-//    if(detail::check_collision(hop,nguoi2))
-//    {
-//        ngchoi.set_type_bullet2(box.get_type());
-//        //xoa hoop
-//    }
-//}
-
-
 bool Extension::pointed_to(int x_pos, int y_pos, SDL_Rect rect)
 {
     return rect.x <= x_pos && x_pos <= rect.x + rect.w

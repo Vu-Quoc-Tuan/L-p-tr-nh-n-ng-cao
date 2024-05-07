@@ -10,7 +10,6 @@ public:
     ~Graphics();
 
     void setforbackground();
-
     void set_rect(const int &x, const int &y) {rect_.x=x; rect_.y=y;}
     SDL_Rect get_rect_() const {return rect_;}
 

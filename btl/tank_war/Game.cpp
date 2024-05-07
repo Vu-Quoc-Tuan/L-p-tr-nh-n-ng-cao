@@ -2,7 +2,46 @@
 
 Game::Game()//tất cả các ảnh và vị trí thì chưa được chỉnh sửa, chx them nhacj,mau
 {
+//phần button:
+    //menu
+    g_button[0].set_rect(318,228);//button single
+    g_button[1].set_rect(314,328);//button multiple
+    g_button[2].set_rect(335,436);//button help
+    g_button[3].set_rect(330,562);//button exit
+    g_button[4].set_rect(837,660);//button rank    chux suawr
 
+    //help
+    g_button[5].set_rect(0,620);//button return
+
+    //pause
+    g_button[6].set_rect(334,297);//button restart
+    g_button[7].set_rect(372,366);//button continue
+    g_button[8].set_rect(411,296);//button home
+    g_button[9].set_rect(493,296);//button music
+
+    //end game
+    g_button[10].set_rect(363,283);//button restart
+    g_button[11].set_rect(389,377);//button home
+    g_button[12].set_rect(394,454);//button exit
+
+    //in match
+    g_button[13].set_rect(0,0);//button pause
+
+
+//phần Text:
+    //score in single
+    g_text[0].set_color(0,0,0);
+
+    //score in multiple
+    g_text[1].set_color(0,0,0);
+    g_text[2].set_color(0,0,0);
+
+    //score in end
+    g_text[3].set_color(0,0,0); //single
+    g_text[4].set_color(0,0,0); //multiple
+
+    //high score
+    g_text[5].set_color(0,0,0);
 }
 
 Game::~Game()
@@ -16,36 +55,18 @@ void Game::set_render(SDL_Renderer* screen)
 
     g_player.set_player2(true);
     g_player.Loadimage_main(renderer);
-
-
-    //menu
-    g_text[0].set_color(253,226,202);//236	135	14
-
-    g_text[1].set_color(253,226,202);//236	135	14
-
-    g_text[2].set_color(253,226,202);//236	135	14
-
-    g_text[3].set_color(253,226,202);//236	135	14
-
-    //end game
-    g_text[4].set_color(253,226,202);//236	135	14
-
-    g_text[5].set_color(253,226,202);//236	135	14
-
-    g_text[6].set_color(253,226,202);//236	135	14
-
-    //score
-    g_text[7].set_color(0,0,0);
-
 }
+
 
 OPTION Game::Show_menu()
 {
+    g_sound.Playintro();
     Graphics bgr;
-    bgr.Loadimage_base("Image/tamthoi/start_menu.png",renderer);
+    bgr.Loadimage_base("Image/background/start.png",renderer);
     bgr.setforbackground();
-    int status=4;
 
+    int status=5;
+    int dem=1;
     int mouse_X,mouse_Y;
 
     OPTION res=OPTION::NO;
@@ -53,18 +74,11 @@ OPTION Game::Show_menu()
     {
         SDL_RenderClear(renderer);
 
-        bgr.render(renderer);
-        g_text[0].Loadtext("SINGLEPLAYER",renderer,1);
-        g_text[1].Loadtext("MULTIPLAYER",renderer,1);
-        g_text[2].Loadtext("HELP",renderer,1);
-        g_text[3].Loadtext("EXIT",renderer,1);
-
-        g_text[0].render_text(375,300,renderer);
-        g_text[1].render_text(375,330,renderer);
-        g_text[2].render_text(375,360,renderer);
-        g_text[3].render_text(375,390,renderer);
-
-        //thêm 1 nút cài đặt ở góc dưới bên phải
+        g_button[0].Loadimage_base("Image/background/button/menu11.png",renderer);
+        g_button[1].Loadimage_base("Image/background/button/menu21.png",renderer);
+        g_button[2].Loadimage_base("Image/background/button/menu31.png",renderer);
+        g_button[3].Loadimage_base("Image/background/button/menu41.png",renderer);
+        g_button[4].Loadimage_base("Image/background/button/menu51.png",renderer);
 
         while(SDL_PollEvent(&events)!=0)
         {
@@ -75,80 +89,142 @@ OPTION Game::Show_menu()
                 case SDL_MOUSEMOTION:
                     mouse_X=events.motion.x;
                     mouse_Y=events.motion.y;
+                    dem=1;
                     for(int i=0;i<status;i++)
                     {
-                        SDL_Rect temp=g_text[i].get_rect();
+                        SDL_Rect temp=g_button[i].get_rect_();
                         if(Extension::pointed_to(mouse_X,mouse_Y,temp))
                         {
-                            g_text[i].set_color(236,135,14);
+                            g_button[i].Loadimage_base(("Image/background/button/menu"+std::to_string(dem)+"2.png").c_str(),renderer);
                         }else{
-                            g_text[i].set_color(253,226,202);
+                            g_button[i].Loadimage_base(("Image/background/button/menu"+std::to_string(dem)+"1.png").c_str(),renderer);
                         }
+                        dem++;
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     mouse_X=events.motion.x;
                     mouse_Y=events.motion.y;
+                    dem=1;
                     for(int i=0;i<status;i++)
                     {
-                        SDL_Rect temp=g_text[i].get_rect();
+                        SDL_Rect temp=g_button[i].get_rect_();
                         if(Extension::pointed_to(mouse_X,mouse_Y,temp))
                         {
-                            if(i==0) return SINGLEPLAYER;
-                            else if(i==1) return MULTIPLAYER;
-                            else if(i==2) return HELP;
-                            else return EXIT_GAME;
+                            g_sound.PlayClick();
+                            if(i==0){
+                                res= OPTION::SINGLEPLAYER;
+                                g_button[0].Loadimage_base("Image/background/button/menu13.png",renderer);
+                            }
+                            else if(i==1){
+                                res= OPTION::MULTIPLAYER;
+                                g_button[1].Loadimage_base("Image/background/button/menu23.png",renderer);
+                            }
+                            else if(i==2){
+                                res= OPTION::HELP;
+                                g_button[2].Loadimage_base("Image/background/button/menu33.png",renderer);
+                            }
+                            else if(i==4){
+                                res= OPTION::RANK;
+                                g_button[4].Loadimage_base("Image/background/button/menu53.png",renderer);
+                            }
+                            else if(i==3){
+                                res= OPTION::EXIT_GAME;
+                                g_button[3].Loadimage_base("Image/background/button/menu43.png",renderer);
+                            }
+                        }else{
+                            g_button[i].Loadimage_base(("Image/background/button/menu"+std::to_string(dem)+"1.png").c_str(),renderer);
                         }
+                        dem++;
                     }
                     break;
             }
         }
+        bgr.render(renderer);
+        for(int i=0;i<status;i++) g_button[i].render(renderer);
+
         SDL_RenderPresent(renderer);
     }
-    return EXIT_GAME;
+    g_sound.Haltmusic();
+    return res;
 }
 
 OPTION Game::Show_help() {
     Graphics i_help;
-    i_help.Loadimage_base("Image/tamthoi/game_over.png", renderer);
+    i_help.Loadimage_base("Image/background/help.png", renderer);
     i_help.setforbackground();
-    while (true) {
-        SDL_Event events;
-        while (SDL_PollEvent(&events)) {
-            if (events.type == SDL_KEYDOWN) {
-                // Phím được nhấn, thoát vòng lặp
-                return OPTION::HOME;
+
+    int mouse_X,mouse_Y;
+    OPTION res=OPTION::NO;
+
+    while (res==NO) {
+        SDL_RenderClear(renderer);
+
+        g_button[5].Loadimage_base("Image/background/button/help1.png",renderer);
+
+        while (SDL_PollEvent(&events)!=0) {
+            switch (events.type)
+            {
+                case SDL_QUIT:
+                    return OPTION::EXIT_GAME;
+                case SDL_MOUSEMOTION:{
+                    mouse_X=events.motion.x;
+                    mouse_Y=events.motion.y;
+                    SDL_Rect temp=g_button[5].get_rect_();
+
+                    if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                    {
+                        g_button[5].Loadimage_base("Image/background/button/help2.png",renderer);
+                    }else{
+                        g_button[5].Loadimage_base("Image/background/button/help1.png",renderer);
+                    }
+                    break;}
+
+                case SDL_MOUSEBUTTONDOWN:
+                    mouse_X=events.button.x;
+                    mouse_Y=events.button.y;
+                    SDL_Rect temp=g_button[5].get_rect_();
+
+                    if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                    {
+                        g_sound.PlayClick();
+                        res=OPTION::HOME;
+                        g_button[5].Loadimage_base("Image/background/button/help3.png",renderer);
+                    }else{
+                        g_button[5].Loadimage_base("Image/background/button/help1.png",renderer);
+                    }
+                    break;
             }
         }
-        SDL_RenderClear(renderer);
         i_help.render(renderer);
+        g_button[5].render(renderer);
         SDL_RenderPresent(renderer);
     }
-    return OPTION::HOME;
+    return res;
 }
 
 OPTION Game::End_game()
 {
-    Graphics image_end;
-    image_end.Loadimage_base("Image/tamthoi/game_over.png",renderer);
-    image_end.setforbackground();
-    int status_begin=5;
-    int status_end=6;
+    g_sound.PlayOuttro();
+    if(g_score!=0){
+        g_text[3].Loadtext("YOU LOSE",renderer,Font4);
+    }else{
+        g_text[4].Loadtext("End Game",renderer,Font4);
+    }
+
+    int status_begin=10;
+    int status_end=12;
 
     int mouse_X, mouse_Y;
-    while(true)
+    OPTION res=OPTION::NO;
+
+    while(res==NO)
     {
-        SDL_RenderClear(renderer);
 
-        image_end.render(renderer);
+        g_button[10].Loadimage_base("Image/background/button/end11.png",renderer);
+        g_button[11].Loadimage_base("Image/background/button/end21.png",renderer);
+        g_button[12].Loadimage_base("Image/background/button/end31.png",renderer);
 
-        g_text[4].Loadtext("Score:"+std::to_string (g_score),renderer,Font4);
-        g_text[5].Loadtext("HOME",renderer,Font4);
-        g_text[6].Loadtext("EXIT",renderer,Font4);
-
-        g_text[4].render_text(375,300,renderer);
-        g_text[5].render_text(375,350,renderer);
-        g_text[6].render_text(375,400,renderer);
 
         while(SDL_PollEvent(&events)!=0)
         {
@@ -156,104 +232,211 @@ OPTION Game::End_game()
             {
                 case SDL_QUIT:
                     return OPTION::EXIT_GAME;
-                case SDL_MOUSEMOTION :
+                case SDL_MOUSEMOTION :{
                     mouse_X=events.motion.x;
                     mouse_Y=events.motion.y;
+                    int dem=1;
+
                     for(int i=status_begin;i<=status_end;i++)
                     {
-                        SDL_Rect temp=g_text[i].get_rect();
+                        SDL_Rect temp=g_button[i].get_rect_();
                         if(Extension::pointed_to(mouse_X,mouse_Y,temp))
                         {
-                            g_text[i].set_color(236,135,14);
+                            g_button[i].Loadimage_base(("Image/background/button/end"+std::to_string(dem)+"2.png").c_str(),renderer);
                         }else{
-                            g_text[i].set_color(253,226,202);
+                            g_button[i].Loadimage_base(("Image/background/button/end"+std::to_string(dem)+"1.png").c_str(),renderer);
                         }
+                        dem++;
                     }
-                    break;
+                    break;}
+
                 case SDL_MOUSEBUTTONDOWN:
-                    mouse_X=events.motion.x;
-                    mouse_Y=events.motion.y;
+                    mouse_X=events.button.x;
+                    mouse_Y=events.button.y;
+                    int dem=1;
+
                     for(int i=status_begin;i<=status_end;i++)
                     {
-                        SDL_Rect temp=g_text[i].get_rect();
-                        if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                        SDL_Rect temp=g_button[i].get_rect_();
+                        if(Extension::pointed_to(mouse_X,mouse_Y,temp))/////
                         {
-                            if(i==5) return OPTION::HOME;
-                            else return EXIT_GAME;
+                            g_sound.PlayClick();
+                            if(i==10)      res=OPTION::SINGLEPLAYER;
+                            else if(i==11) res=OPTION::HOME;
+                            else if(i==12) res=OPTION::EXIT_GAME;
+                            g_button[i].Loadimage_base(("Image/background/button/end"+std::to_string(dem)+"3.png").c_str(),renderer);
+                        }else{
+                            g_button[i].Loadimage_base(("Image/background/button/end"+std::to_string(dem)+"1.png").c_str(),renderer);
                         }
+                        dem++;
                     }
                     break;
             }
         }
+        if(g_score!=0){
+            g_text[3].render_text(323,223,renderer);
+        }else{
+            g_text[4].render_text(323,223,renderer);
+        }
+        for(int i=status_begin;i<=status_end;i++) g_button[i].render(renderer);
+
         SDL_RenderPresent(renderer);
     }
-    return EXIT_GAME;
+    g_sound.Haltmusic();
+    return res;
 }
 
 OPTION Game::Pause_game()
 {
     Graphics temp;
-    temp.Loadimage_base("anhpause",renderer);
-    temp.set_rect(300,400);
-    int mouse_X, mouse_Y;
+    temp.Loadimage_base("Image/background/button/pause.png",renderer);
+    temp.set_rect(358,214);
 
-    while(true)
+    int status_begin=6;
+    int status_end=9;
+    int mouse_X, mouse_Y;
+    int dem=1;
+
+    OPTION res=OPTION::NO;
+    while(res==NO)
     {
-        temp.render(renderer);
+        dem=1;
+        for(int i=status_begin;i<=status_end;i++){
+            g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"1.png").c_str(),renderer);
+            dem++;
+        }
 
         while(SDL_PollEvent(&events)!=0)
         {
-            if(events.type==SDL_MOUSEBUTTONDOWN)
+            switch(events.type)
             {
-                mouse_X=events.motion.x;
-                mouse_Y=events.motion.y;
+                case SDL_QUIT:
+                    return OPTION::EXIT_GAME;
+                case SDL_MOUSEMOTION :{
+                    mouse_X=events.motion.x;
+                    mouse_Y=events.motion.y;
+                    dem=1;
 
-                SDL_Rect n_restart={1,2,3,4};
-                SDL_Rect n_resume ={1,2,3,4};
-                SDL_Rect n_home   ={1,2,3,4};
+                    for(int i=status_begin;i<=status_end;i++)
+                    {
+                        SDL_Rect temp=g_button[i].get_rect_();
+                        if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                        {
+                            g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"2.png").c_str(),renderer);
+                        }else{
+                            g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"1.png").c_str(),renderer);
+                        }
+                        dem++;
+                    }
+                    break;}
 
-                if(Extension::pointed_to(mouse_X,mouse_Y,n_restart))     return OPTION::REPLAY;
-                else if(Extension::pointed_to(mouse_X,mouse_Y,n_home))   return OPTION::HOME;
-                else if(Extension::pointed_to(mouse_X,mouse_Y,n_resume)) return OPTION::NO;
+                case SDL_MOUSEBUTTONDOWN:
+                    mouse_X=events.button.x;
+                    mouse_Y=events.button.y;
+                    dem=1;
+
+                    for(int i=status_begin;i<=status_end;i++)
+                    {
+                        SDL_Rect temp=g_button[i].get_rect_();
+                        if(Extension::pointed_to(mouse_X,mouse_Y,temp))/////
+                        {
+                            g_sound.PlayClick();
+                            if(i==6)      res=OPTION::REPLAY;
+                            else if(i==7) res=OPTION::CONTINUE;
+                            else if(i==8) res=OPTION::HOME;
+                            else if(i==9) //TAWTR NHAC
+                            g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"3.png").c_str(),renderer);
+                        }else{
+                            g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"1.png").c_str(),renderer);
+                        }
+                        dem++;
+                    }
+                    break;
             }
         }
+
+        temp.render(renderer);
+        for(int i=status_begin;i<=status_end;i++)
+            g_button[i].render(renderer);
+
         SDL_RenderPresent(renderer);
     }
-    return OPTION::NO;
+    return res;
 }
 
-OPTION Game::Play_single()
+OPTION Game::Play_single()//sẽ đổi map
 {
     Reset_game();
+
+    Graphics back_ground;
+    back_ground.Loadimage_base("Image/background/multiple.png",renderer);
+    back_ground.setforbackground();
+
     g_player.set_player2(false);
 
     game_map.load_map(1);
     game_map.load_title(renderer);
     Map map_data= game_map.get_datamap();
 
+    int mouse_X, mouse_Y;
+
     int spawnTime=0;
-//    int itemspawn=0;
+    int itemspawn=0;
 
 //    g_time.Start();
 
-    bool quit=false;
+    OPTION res= OPTION::NO;
 
-    while(!quit)
+    while(res==NO)
     {
         int staticks=SDL_GetTicks64();
+        g_text[0].Loadtext("SCORE:"+std::to_string(g_score),renderer,Font3);
+        g_button[13].Loadimage_base("Image/background/button/ingame1.png",renderer);
+
 
         while(SDL_PollEvent(&events)!=0)
         {
-            if (events.type == SDL_QUIT) {
-                quit = true;
-                break;
-            }
-            if (events.type==SDL_KEYDOWN && events.key.keysym.sym==SDLK_p){
-                OPTION current = Pause_game();
-                if(current==REPLAY)     return Play_single();
-                else if(current==HOME)  return Show_menu();
-            }
+            switch (events.type){
+                case SDL_QUIT:
+                    return OPTION::EXIT_GAME;
+//                case SDL_KEYDOWN:
+//                    if (events.key.keysym.sym == SDLK_p){
+//                        OPTION current = Pause_game();
+//                        if(current==REPLAY)     res= OPTION::SINGLEPLAYER;
+//                        else if(current==HOME)  res=OPTION::HOME;
+//                    }
+//                    break;
 
+                case SDL_MOUSEMOTION:{
+                    mouse_X=events.motion.x;
+                    mouse_Y=events.motion.y;
+
+                    SDL_Rect temp=g_button[13].get_rect_();
+
+                    if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                    {
+                        g_button[13].Loadimage_base("Image/background/button/ingame2.png",renderer);
+                    }else{
+                        g_button[13].Loadimage_base("Image/background/button/ingame1.png",renderer);
+                    }
+                    break;}
+
+                case SDL_MOUSEBUTTONDOWN:
+                    mouse_X=events.button.x;
+                    mouse_Y=events.button.y;
+
+                    SDL_Rect temp=g_button[13].get_rect_();
+                    if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                    {
+                        g_sound.PlayClick();
+                        OPTION current = Pause_game();
+                        if(current==REPLAY)     res= OPTION::SINGLEPLAYER;
+                        else if(current==HOME)  res=OPTION::HOME;
+                    }
+
+                    break;
+
+            }
             g_player.fire_action(renderer);
         }
 
@@ -263,27 +446,33 @@ OPTION Game::Play_single()
             list_threat.push_back(spawnMonster());
             spawnTime=0;
         }
+        down_hp();
+        delete_threat();
+        itemspawn++;
+        if(itemspawn>500 && list_item.size()<=5)
+        {
+            list_item.push_back(spawn_item());
+            itemspawn=0;
+        }
 
-//        itemspawn++;
-//        if(itemspawn>100 && list_item.size()<=8)
-//        {
-//            list_item.push_back(spawn_item());
-//            itemspawn=0;
-//        }
+        if(hp<=0) res=End_game();
 
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
 
+        back_ground.render(renderer);
         game_map.drawmap(renderer);
 
-        g_text[7].Loadtext("SCORE:"+std::to_string(g_score),renderer,Font3);
-        g_text[7].render_text(0,0,renderer);
+
+        g_text[0].render_text(750,5,renderer);
 
         load_threat();
-//        load_item  ();
+        load_item  (map_data);
+        upgrade();
 
         g_player.draw_bullet(renderer,map_data);
         g_player.Show(renderer);
+        g_button[13].render(renderer);
 
         SDL_RenderPresent(renderer);
 
@@ -295,56 +484,107 @@ OPTION Game::Play_single()
         g_player.Update_action(renderer,map_data);
 
     }
+    return res;
 }
 
 OPTION Game::Play_mutile()
 {
     Reset_game();
+
+    Graphics back_ground;
+    back_ground.Loadimage_base("Image/background/multiple.png",renderer);
+    back_ground.setforbackground();
+
     g_player.set_player2(true);
 
     game_map.load_map(1);
     game_map.load_title(renderer);
     Map map_data= game_map.get_datamap();
 
-//    int itemspawn=0;
+    int itemspawn=0;
+    int mouse_X, mouse_Y;
 
-    bool quit=false;
+    OPTION res= OPTION::NO;
 
-    while(!quit)
+    while(res==NO)
     {
         int staticks=SDL_GetTicks64();
 
+        if(score_value1!=0) {
+            score_1+=score_value1%2;
+            score_value1=0;
+        }
+        if(score_value2!=0)
+        {
+            score_2+=score_value2%2;
+            score_value2=0;
+        }
+        g_text[1].Loadtext(std::to_string(score_1),renderer,Font3);
+        g_text[2].Loadtext(std::to_string(score_2),renderer,Font3);
+        g_button[13].Loadimage_base("Image/background/button/ingame1.png",renderer);
+
         while(SDL_PollEvent(&events)!=0)
         {
-            if (events.type == SDL_QUIT) {
-                quit = true;
-                break;
-            }
-            if (events.type==SDL_KEYDOWN && events.key.keysym.sym==SDLK_p){
-                OPTION current = Pause_game();
-                if(current==REPLAY)     return Play_mutile();
-                else if(current==HOME)  return Show_menu();
-            }
+            switch (events.type){
+                case SDL_QUIT:
+                    return OPTION::EXIT_GAME;
 
+                case SDL_MOUSEMOTION:{
+                    mouse_X=events.motion.x;
+                    mouse_Y=events.motion.y;
+
+                    SDL_Rect temp=g_button[13].get_rect_();
+
+                    if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                    {
+                        g_button[13].Loadimage_base("Image/background/button/ingame2.png",renderer);
+                    }else{
+                        g_button[13].Loadimage_base("Image/background/button/ingame1.png",renderer);
+                    }
+                    break;}
+
+                case SDL_MOUSEBUTTONDOWN:
+                    mouse_X=events.button.x;
+                    mouse_Y=events.button.y;
+
+                    SDL_Rect temp=g_button[13].get_rect_();
+                    if(Extension::pointed_to(mouse_X,mouse_Y,temp))
+                    {
+                        g_sound.PlayClick();
+                        OPTION current = Pause_game();
+                        if(current==REPLAY)     res= OPTION::MULTIPLAYER;
+                        else if(current==HOME)  res=OPTION::HOME;
+                    }
+
+                    break;
+
+            }
             g_player.fire_action(renderer);
         }
 
-//        itemspawn++;
-//        if(itemspawn>100 && list_item.size()<=7)
-//        {
-//            list_item.push_back(spawn_item());
-//            itemspawn=0;
-//        }
+        itemspawn++;
+        if(itemspawn>100 && list_item.size()<=3)
+        {
+            list_item.push_back(spawn_item());
+            itemspawn=0;
+        }
+
 
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
 
+        back_ground.render(renderer);
         game_map.drawmap(renderer);
 
-//        load_item();
+        load_item(map_data);
+        upgrade();
 
         g_player.draw_bullet(renderer,map_data);
         g_player.Show(renderer);
+
+        g_text[1].render_text(80,647,renderer);
+        g_text[2].render_text(782,647,renderer);
+        g_button[13].render(renderer);
 
         SDL_RenderPresent(renderer);
 
@@ -354,32 +594,26 @@ OPTION Game::Play_mutile()
         }
 
         g_player.Update_action(renderer,map_data);
-
+        get_point_multiple();
     }
+    return res;
 }
 
 
 
-
-
-
-void Game::Reset_game()/////
+void Game::Reset_game()//chỉnh lại type_bullet,xoas ddan
 {
     g_score=0;
-    g_player.set_type_bullet1(rocket);
+    score_1=0;
+    score_2=0;
+    score_value1=0;
+    score_value2=0;
+    hp= 20;
+    g_player.set_type_bullet1(normal);
     g_player.set_type_bullet2(normal);
     list_item.clear();
     list_threat.clear();
 }
-
-void Game::show_score()
-{
-    g_text[7].Loadtext("Score:"+std::to_string (g_score),renderer,Font3);
-    g_text[7].render_text(0,0,renderer);
-}
-
-
-
 
 void Game::Start()
 {
@@ -404,7 +638,7 @@ void Game::Start()
             case OPTION::MULTIPLAYER :
                 Reset_game();
                 current_option=Play_mutile();
-
+                break;
 
             default:
                 current_option=OPTION::EXIT_GAME;
@@ -417,21 +651,48 @@ void Game::Start()
 
 
 
-void Game::load_item()
+void Game::load_item(const Map& map_data)
 {
+    int i=0;
     for(item &temp: list_item)
     {
         temp.load_image_item(renderer);
-        temp.set_type();
+//        if(
+//            (map_data.tile[temp.get_rect_().x/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
+//            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
+//            map_data.tile[temp.get_rect_().x/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1 ||
+//            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1)
+//)
+//              list_item.erase(list_item.begin()+i);
         temp.show_item(renderer);
+        i++;
     }
 }
 
 item Game::spawn_item()
 {
+    g_sound.PlaySpawn();
     item temp;
     temp.set_distination(game_map.get_datamap());
+    temp.set_type();
     return temp;
+}
+void Game::upgrade()
+{
+    if (!list_item.empty()) {
+        for (auto it = list_item.begin(); it!= list_item.end();) {
+            if (detail::check_collision(it->get_rect_(), g_player.get_rect_player1())) {
+                g_sound.PlayCollect();
+                g_player.set_type_bullet1(it->get_type());
+                it = list_item.erase(it);
+            } else if (detail::check_collision(it->get_rect_(), g_player.get_rect_player2())) {
+                g_player.set_type_bullet2(it->get_type());
+                it = list_item.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
 }
 
 void Game::load_threat()
@@ -451,4 +712,85 @@ Threat_object Game::spawnMonster()
     int y = rand() % SCREEN_HEIGHT;
     monster.set_destination(x,y);
     return monster;
+}
+
+void Game::delete_threat() {
+    std::vector<BulletObject*> list1 = g_player.get_list1_();
+
+    for (size_t i = 0; i < list_threat.size(); ) {
+        Threat_object& temp1 = list_threat.at(i);
+
+        for (size_t j = 0; j < list1.size(); ) {
+            BulletObject* temp2 = list1.at(j);
+
+            if (detail::check_collision(temp1.get_rect_(), temp2->get_rect_())) {
+                g_score++;
+                temp2->set_move(false);
+                list1.erase(list1.begin() + j);
+                list_threat.erase(list_threat.begin() + i);
+            } else {
+                ++j;
+            }
+        }
+
+        if (i < list_threat.size()) {
+            ++i;
+        }
+    }
+}
+
+void Game::down_hp()
+{
+    for(int i=0;i<list_threat.size();i++)
+    {
+        Threat_object temp= list_threat.at(i);
+        if(detail::check_insize(temp.get_rect_(),g_player.get_rect_player1()))
+        {
+            hp-=2;
+            list_threat.erase(list_threat.begin()+i);
+            //delete temp;
+            //temp=NULL;
+        }
+    }
+}
+
+void Game::get_point_multiple()
+{
+    std::vector<BulletObject*> list1 = g_player.get_list1_();
+    std::vector<BulletObject*> list2 = g_player.get_list2_();
+
+    for (size_t j = 0; j < list1.size(); ) {
+        BulletObject* temp1 = list1.at(j);
+
+        if (detail::check_collision(temp1->get_rect_(), g_player.get_rect_player1())
+            && temp1->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
+            g_sound.PlayT_dead();
+            score_value2++;
+            temp1->set_move(false);
+            list1.erase(list1.begin() + j);
+        } else if (detail::check_collision(temp1->get_rect_(), g_player.get_rect_player2())
+                   && temp1->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
+            g_sound.PlayT_dead();
+            score_value1++;
+            temp1->set_move(false);
+            list1.erase(list1.begin() + j);
+        }else j++;
+    }
+    for (size_t i = 0; i < list2.size(); ) {
+        BulletObject* temp2 = list2.at(i);
+
+        if (detail::check_collision(temp2->get_rect_(), g_player.get_rect_player1())
+            && temp2->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
+            g_sound.PlayT_dead();
+            score_value2++;
+            temp2->set_move(false);
+            list2.erase(list2.begin() + i);
+        } else if (detail::check_collision(temp2->get_rect_(), g_player.get_rect_player2())
+                   && temp2->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
+            g_sound.PlayT_dead();
+            score_value1++;
+            temp2->set_move(false);
+            list2.erase(list2.begin() + i);
+        }else i++;
+    }
 }

@@ -2,18 +2,21 @@
 
 item::item()
 {
-    type=1;
+    type=type_item::rocket;
+    rect_.x=450;
+    rect_.y=100;
 }
 bool item::load_image_item(SDL_Renderer* screen)
 {
-    bool temp;
+    //Free();
+    bool temp=false;
     if(type==laser)
     {
-        temp=Graphics::Loadimage_base("box load laser",screen);
+        temp=Graphics::Loadimage_base("Image/kit/Laser.png",screen);
     }else if(type==rocket){
-        temp=Graphics::Loadimage_base("box load roket", screen);
+        temp=Graphics::Loadimage_base("Image/kit/Rocket.png", screen);
     }else {
-        temp=Graphics::Loadimage_base("box load armor", screen);
+        temp=Graphics::Loadimage_base("Image/kit/Armor.png", screen);
     }
     return temp;
 }
@@ -27,17 +30,13 @@ void item::set_type()
 void item::set_distination(const Map& map_data)
 {
     bool check=false;
-    while(!check)
-    {
         srand(time(NULL));
-        int tempx=rand()%SCREEN_WIDTH;
-        int tempy=rand()%SCREEN_HEIGHT;
-        if(map_data.tile[tempy][tempx]==0){
+        int tempx=rand()%706+90;
+        int tempy=rand()%601+45;
+
             rect_.x=tempx;
             rect_.y=tempy;
-            break;
-        }
-    }
+
 }
 
 void item::show_item(SDL_Renderer* screen)

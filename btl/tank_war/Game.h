@@ -20,28 +20,40 @@ private:
     MapObject game_map;
     Player g_player;
 
+    unsigned int hp;
+
+    //dead
+    void down_hp();
+    void get_point_multiple();
+
     //threat
     std::vector<Threat_object> list_threat;
     Threat_object spawnMonster();
     void load_threat();
+    void delete_threat();
 
     //item
     std::vector<item> list_item;
     item spawn_item();
-    void load_item();
+    void load_item(const Map& map_data);
+    void upgrade();
 
     //time
     Timer g_time;
 
     //score
-    int g_score;
-    void show_score();
+    unsigned int g_score;
+    unsigned int score_1;
+    unsigned int score_2;
+    unsigned int score_value1;
+    unsigned int score_value2;
 
     //sound
     Sound g_sound;
 
-    //text
-    LText g_text[20];
+    //text, button
+    LText g_text[8];
+    Graphics g_button[15];
 
     //method
     OPTION Play_single();
@@ -52,7 +64,6 @@ private:
     OPTION Pause_game();
 
     void Reset_game ();
-
 };
 
 #endif // GAME_H_INCLUDED

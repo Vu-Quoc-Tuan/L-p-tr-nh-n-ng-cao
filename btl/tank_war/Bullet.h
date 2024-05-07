@@ -6,6 +6,9 @@
 #include "Extend.h"
 #include <chrono>
 #include <queue>
+#include "Sound.h"
+
+const float MIN_DISTANCE_FROM_SPAWN_POINT = 15.0f;
 
 class BulletObject : public Graphics
 {
@@ -29,16 +32,19 @@ public:
     void set_move (const bool& status) {is_move=status;}
     bool get_move () const {return is_move;}
 
-    void set_angle_bullet(const int& value) { angle_bullet=value;}
+    void set_angle_bullet(const int& value) { angle_bullet=value;
+                                              spawn_x_=rect_.x;
+                                              spawn_y_=rect_.y;}
     void set_type_bullet (const int& value) {type_bullet  = value;}
 
 
-  //  int getCollisionDirection(const SDL_Rect& bullet, const SDL_Rect& wall);
-  //  void updateAngleForBounce(int collisionDir);
+    float getDistanceFromSpawnPoint() const {
+        return std::sqrt(std::pow(rect_.x - spawn_x_, 2) + std::pow(rect_.y - spawn_y_, 2));
+    }
 
 private:
-   // int x_value;
-   // int y_value;
+    int spawn_x_;
+    int spawn_y_;
 
     bool is_move;
     int bulletcheck;
@@ -48,6 +54,7 @@ private:
 
     std::chrono::high_resolution_clock::time_point start_time;
     std::vector<std::pair<int, int>> path;
+ //   Sound b_sound;
 };
 
 

@@ -86,14 +86,14 @@ void Player::Update_action(SDL_Renderer* screen, const Map& map_data)
     checkToMap(map_data);
 }
 
-void Player::fire_action( SDL_Renderer* screen)
+void Player::fire_action( SDL_Renderer* screen)//đã thêm lại type
 {
     const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
     float radians = angle * PI / 180.0f;        float radians2 = angle2 * PI / 180.0f;
 
 //xe1
     if(currentKeyStates[SDL_SCANCODE_V]){
-
+        p_sound.PlayFire();
         float mid_x=x_pos_+rect_.w/2-5;
         float mid_y=y_pos_+rect_.h/2-3;
         float heal_y  =y_pos_+rect_.h;
@@ -101,10 +101,10 @@ void Player::fire_action( SDL_Renderer* screen)
         float bullet_y=+(heal_y-mid_y)*cos(radians)+mid_y;//tính tọa độ sau góc quay
 
         BulletObject* bullet_temp=new BulletObject;
+        bullet_temp->set_type_bullet(type_bullet);
         bullet_temp->load_image_bullet(screen);
         bullet_temp->set_rect(bullet_x+sin(radians)*BULLET_SPEED*2,bullet_y-cos(radians)*BULLET_SPEED*2);
         bullet_temp->set_move(true);
-        bullet_temp->set_type_bullet(type_bullet);
         bullet_temp->set_angle_bullet(angle);
 
         bullet_list.push_back(bullet_temp);
@@ -113,7 +113,7 @@ void Player::fire_action( SDL_Renderer* screen)
 //xe2
     if(appear){
         if(currentKeyStates[SDL_SCANCODE_M]){
-
+            p_sound.PlayFire();
             float mid2_x=x_pos2_+rect2_.w/2-5;
             float mid2_y=y_pos2_+rect2_.h/2-3;
             float heal2_y  =y_pos2_+rect2_.h;
@@ -121,16 +121,15 @@ void Player::fire_action( SDL_Renderer* screen)
             float bullet2_y=+(heal2_y-mid2_y)*cos(radians2)+mid2_y;//tính tọa độ sau góc quay
 
             BulletObject* bullet_temp2=new BulletObject;
+            bullet_temp2->set_type_bullet(type_bullet2);
             bullet_temp2->load_image_bullet(screen);
             bullet_temp2->set_rect(bullet2_x+sin(radians2)*BULLET_SPEED*2,bullet2_y-cos(radians2)*BULLET_SPEED*2);
             bullet_temp2->set_move(true);
-            bullet_temp2->set_type_bullet(type_bullet2);
             bullet_temp2->set_angle_bullet(angle2);
 
             bullet_list2.push_back(bullet_temp2);
         }
     }
-
 }
 
 void Player::checkToMap(const Map& map_data)
@@ -310,7 +309,7 @@ void Player::draw_bullet(SDL_Renderer* screen,const Map& map_data){
         BulletObject* bullet_now=bullet_list[i];
         if(bullet_now!=NULL){
             if(bullet_now->get_move()){
-                bullet_now->control_bullet(map_data, x_pos2_, y_pos2_);///
+                bullet_now->control_bullet(map_data, x_pos2_, y_pos2_);
                 if(type_bullet==1) bullet_now->movent(map_data);
                 bullet_now->render_bullet(screen);
                 bullet_now->time_bullet(BULLET_LIFETIME);
@@ -324,7 +323,8 @@ void Player::draw_bullet(SDL_Renderer* screen,const Map& map_data){
         BulletObject* bullet2_now=bullet_list2[j];
         if(bullet2_now!=NULL){
             if(bullet2_now->get_move()){
-                bullet2_now->control_bullet(map_data, x_pos_,y_pos_);///
+                bullet2_now->control_bullet(map_data, x_pos_,y_pos_);
+                if(type_bullet2==1) bullet2_now->movent(map_data);
                 bullet2_now->render_bullet(screen);
                 bullet2_now->time_bullet(BULLET_LIFETIME);
             }else{
@@ -332,10 +332,12 @@ void Player::draw_bullet(SDL_Renderer* screen,const Map& map_data){
             }
         }
     }
+
 }
 void Player::delete_bullet(const int& value, const int type)
 {
     if(type==1){
+        //type_bullet=normal;
         int length=bullet_list.size();
         if(length>0 && value<length){
             BulletObject* bullet_temp=bullet_list.at(value);
@@ -348,6 +350,7 @@ void Player::delete_bullet(const int& value, const int type)
     }
 
     if(type==2){
+        type_bullet2=normal;
         int length2=bullet_list2.size();
         if(length2>0 && value<length2){
             BulletObject* bullet2_temp=bullet_list2.at(value);

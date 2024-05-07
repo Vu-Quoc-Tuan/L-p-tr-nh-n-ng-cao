@@ -1,21 +1,23 @@
 #include "Graphics.h"
 
 Graphics::Graphics()
-{
-    texture=NULL;
-    rect_.x=0;
-    rect_.y=0;
-    rect_.w=0;
-    rect_.h=0;
-}
+    {
+        texture=NULL;
+        rect_.x=0;
+        rect_.y=0;
+        rect_.w=0;
+        rect_.h=0;
+    }
 
 Graphics::~Graphics()
-{
-    Free();
-}
+    {
+        Free();
+    }
 
 bool Graphics::Loadimage_base(const char *filename,SDL_Renderer* screen)
     {
+        Free();
+
         texture = IMG_LoadTexture(screen, filename);
         if (texture == NULL){
             std::cerr << "Unable to create texture from " << filename << "! SDL Error: " << SDL_GetError() << std::endl;
@@ -45,7 +47,7 @@ void Graphics::Free()
     }
 
 void Graphics::setforbackground()
-{
-    SDL_Rect temp={0,0,SCREEN_HEIGHT,SCREEN_HEIGHT};
-    rect_=temp;
-}
+    {
+        SDL_Rect temp={0,0,SCREEN_WIDTH,SCREEN_HEIGHT};
+        rect_=temp;
+    }

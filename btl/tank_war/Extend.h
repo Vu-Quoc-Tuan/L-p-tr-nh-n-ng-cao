@@ -3,6 +3,7 @@
 
 #include "Settings.h"
 
+
 namespace detail
 {
     bool check_collision (const SDL_Rect &object1,
@@ -11,7 +12,9 @@ namespace detail
                       const SDL_Rect &object2);
 
 }
-static    SDL_Event events;
+
+static  SDL_Event events;
+
 enum type_item
 {
     normal=-1,

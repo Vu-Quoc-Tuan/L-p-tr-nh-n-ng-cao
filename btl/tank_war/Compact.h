@@ -20,6 +20,8 @@ enum OPTION
     SINGLEPLAYER=4,
     MULTIPLAYER=5,
     PAUSE    =6,
+    RANK     =7,
+    CONTINUE =8,
 
     NO=10
 };
@@ -34,8 +36,6 @@ namespace SDLWin
 
 namespace Extension
 {
-    bool WasShot ();
-    void upgrade_bullet(item & box, Player & ngchoi);
     bool pointed_to(int x_pos, int y_pos, SDL_Rect rect);
 }
 

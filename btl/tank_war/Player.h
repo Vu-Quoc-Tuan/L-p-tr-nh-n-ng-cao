@@ -4,6 +4,7 @@
 #include "Graphics.h"
 #include "Map.h"
 #include "Bullet.h"
+#include "Sound.h"
 
 class Player
 {
@@ -28,8 +29,8 @@ public:
     void set_type_bullet1(const int& value) {type_bullet=value;}
     void set_type_bullet2(const int& value) {type_bullet2=value;}
 
-//    float get_x_pos() {return x_pos_;}
-//    float get_y_pos() {return y_pos_;}
+    std::vector<BulletObject*> get_list1_() {return bullet_list;}
+    std::vector<BulletObject*> get_list2_() {return bullet_list2;}
 
 private:
     float x_pos_;
@@ -55,7 +56,7 @@ private:
     bool appear;
     std::vector<BulletObject*>bullet_list2;
     int type_bullet2;
-
+    Sound p_sound;
 };
 
 

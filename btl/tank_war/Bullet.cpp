@@ -15,10 +15,10 @@ bool BulletObject::load_image_bullet(SDL_Renderer* screen)
 {
     bool temp;
     if(type_bullet==rocket){
-        temp=Graphics::Loadimage_base("Image/bullet/bullet1.png",screen);
+        temp=Graphics::Loadimage_base("Image/bullet/rocket.png",screen);
 
     }else if(type_bullet==laser){
-        temp=Graphics::Loadimage_base("Image/bullet/bullet1.png",screen);
+        temp=Graphics::Loadimage_base("Image/bullet/rocket.png",screen);
     }else{
         temp=Graphics::Loadimage_base("Image/bullet/bullet1.png",screen);
     }
@@ -150,6 +150,7 @@ void BulletObject::Bouncing_bullet(const Map& map_data) {
 
           //trục y
           if (detail::check_insize(bullet1, Wall)) {
+           // b_sound.PlayBounce();
             collided_x = true;
             angle_bullet = (-angle_bullet + 360) - (i * (BULLET_SPEED / TILE_SIZE) * 90);
             angle_bullet = fmodf(angle_bullet, 360.0f);
@@ -158,6 +159,7 @@ void BulletObject::Bouncing_bullet(const Map& map_data) {
 
           //trục x
           if (detail::check_insize(bullet2, Wall)) {
+            //b_sound.PlayBounce();
             collided_y = true;
             if (angle_bullet < 180) {
               angle_bullet = abs(-angle_bullet + 180) - (j * (BULLET_SPEED / TILE_SIZE) * 90);
@@ -199,5 +201,5 @@ void BulletObject::time_bullet(const int count_time)
 void BulletObject::render_bullet(SDL_Renderer* screen)
 {
     SDL_Rect renderquad = {rect_.x, rect_.y, rect_.w, rect_.h};
-    SDL_RenderCopy(screen,texture,NULL,&renderquad);
+    SDL_RenderCopyEx(screen, texture, NULL,&renderquad, angle_bullet+90, NULL, SDL_FLIP_NONE);
 }

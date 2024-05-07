@@ -9,8 +9,8 @@ LText::LText()
     SDL_Color temp={255,255,255};
     c_text=temp;
 
-    font32 = TTF_OpenFont("tamthoi/font.ttf", 32);
-    font48 = TTF_OpenFont("tamthoi/font.ttf", 48);
+    font32 = TTF_OpenFont("font/font.ttf", 32);
+    font48 = TTF_OpenFont("font/font.ttf", 48);
 }
 
 bool LText::Loadtext(std::string path,SDL_Renderer* screen,int Type_font)
