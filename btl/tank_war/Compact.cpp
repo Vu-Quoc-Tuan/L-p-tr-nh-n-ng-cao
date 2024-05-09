@@ -66,3 +66,36 @@ bool Extension::pointed_to(int x_pos, int y_pos, SDL_Rect rect)
     return rect.x <= x_pos && x_pos <= rect.x + rect.w
         && rect.y <= y_pos && y_pos <= rect.y + rect.h;
 }
+
+bool Extension::check_highscore(int score)
+{
+    std::fstream file ("font/highScore.txt");
+    int temp;
+    if(file.is_open())
+    {
+        file>>temp;
+        file.close();
+        if(temp<score) return true;
+        else return false;
+    }else{
+        std::cerr << "Unable to open file!" << std::endl;
+    }
+    return false;
+}
+void Extension::save_score(int score)
+{
+    std::ofstream delete_file ("font/highScore.txt", std::ofstream::out | std::ofstream::trunc);
+    if (delete_file.is_open()) {
+        delete_file.close();
+    } else {
+        std::cerr << "Unable to open file!" << std::endl;
+    }
+
+    std::ofstream file ("font/highScore.txt");
+    if (file.is_open()) {
+        file<<score;
+        file.close();
+    } else {
+        std::cerr << "Unable to open file!" << std::endl;
+    }
+}

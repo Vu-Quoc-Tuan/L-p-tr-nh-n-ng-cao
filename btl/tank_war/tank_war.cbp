@@ -36,6 +36,8 @@
 		<Unit filename="Bullet.h" />
 		<Unit filename="Compact.cpp" />
 		<Unit filename="Compact.h" />
+		<Unit filename="Explosion.cpp" />
+		<Unit filename="Explosion.h" />
 		<Unit filename="Extend.cpp" />
 		<Unit filename="Extend.h" />
 		<Unit filename="Game.cpp" />

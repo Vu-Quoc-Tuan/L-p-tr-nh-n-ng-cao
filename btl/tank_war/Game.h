@@ -20,11 +20,15 @@ private:
     MapObject game_map;
     Player g_player;
 
-    unsigned int hp;
+    int hp;
 
     //dead
     void down_hp();
     void get_point_multiple();
+    bool armor1;
+    bool armor2;
+    Graphics armor_tank[2];
+    bool is_dead;
 
     //threat
     std::vector<Threat_object> list_threat;
@@ -54,6 +58,9 @@ private:
     //text, button
     LText g_text[8];
     Graphics g_button[15];
+
+    //Explosion
+    Explosion bomb;
 
     //method
     OPTION Play_single();

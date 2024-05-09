@@ -16,8 +16,8 @@ Graphics::~Graphics()
 
 bool Graphics::Loadimage_base(const char *filename,SDL_Renderer* screen)
     {
-        Free();
 
+        Free();
         texture = IMG_LoadTexture(screen, filename);
         if (texture == NULL){
             std::cerr << "Unable to create texture from " << filename << "! SDL Error: " << SDL_GetError() << std::endl;
@@ -34,6 +34,7 @@ void Graphics::render(SDL_Renderer* dest)
 
         SDL_Rect renderquad={rect_.x,rect_.y,rect_.w,rect_.h};
         SDL_RenderCopy(dest,texture,NULL,&renderquad);
+        //Free();//test
     }
 
 void Graphics::Free()

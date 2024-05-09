@@ -8,7 +8,7 @@
 #include <queue>
 #include "Sound.h"
 
-const float MIN_DISTANCE_FROM_SPAWN_POINT = 15.0f;
+const float MIN_DISTANCE_FROM_SPAWN_POINT = 20.0f;
 
 class BulletObject : public Graphics
 {
@@ -26,8 +26,8 @@ public:
 
     //rocket
     void find_anyone(const Map& map_data,int targetX, int targetY);
-    void movent(const Map& map_data);
-
+    void movent(const Map& map_data ,int targetX, int targetY);
+    void getAngle(const Map& map_data,int targetX, int targetY);
 
     void set_move (const bool& status) {is_move=status;}
     bool get_move () const {return is_move;}
@@ -54,7 +54,8 @@ private:
 
     std::chrono::high_resolution_clock::time_point start_time;
     std::vector<std::pair<int, int>> path;
- //   Sound b_sound;
+
+    int angle_change;
 };
 
 

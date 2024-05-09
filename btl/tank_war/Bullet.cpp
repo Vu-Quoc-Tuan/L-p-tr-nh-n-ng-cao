@@ -9,16 +9,17 @@ BulletObject::BulletObject()
     angle_bullet=0;
 
     type_bullet=normal;
+    angle_change=0;
 }
 
 bool BulletObject::load_image_bullet(SDL_Renderer* screen)
 {
     bool temp;
     if(type_bullet==rocket){
-        temp=Graphics::Loadimage_base("Image/bullet/rocket.png",screen);
+        temp=Graphics::Loadimage_base("Image/bullet/bullet1.png",screen);
 
     }else if(type_bullet==laser){
-        temp=Graphics::Loadimage_base("Image/bullet/rocket.png",screen);
+        temp=Graphics::Loadimage_base("Image/bullet/lazer.png",screen);
     }else{
         temp=Graphics::Loadimage_base("Image/bullet/bullet1.png",screen);
     }
@@ -33,7 +34,7 @@ void BulletObject::control_bullet(const Map& map_data, int targetX, int targetY)
 
     }else if(type_bullet==rocket)
     {
-        find_anyone(map_data, targetX, targetY);
+        movent(map_data, targetX, targetY);
 
     }else {
         Bouncing_bullet(map_data);
@@ -48,7 +49,7 @@ void BulletObject::through_wall()
 }
 
 
-
+//đang sai
 void BulletObject::find_anyone(const Map& map_data, int targetX, int targetY) {
     path.clear();
 
@@ -64,65 +65,156 @@ void BulletObject::find_anyone(const Map& map_data, int targetX, int targetY) {
         wait.pop();
         visited[top.first][top.second] = true;
 
-        if(top.first==targetY/TILE_SIZE && top.second==targetX/TILE_SIZE) break;
+        // Nếu đến được vị trí mục tiêu, dừng lại
+        if (top.first == targetY / TILE_SIZE && top.second == targetX / TILE_SIZE) {
+            // Tạo đường đi từ mục tiêu đến vị trí hiện tại của viên đạn
+            std::pair<int, int> current = top;
+            while (current != std::make_pair(rect_.y / TILE_SIZE, rect_.x / TILE_SIZE)) {
+                path.push_back(current);
+                current = parent[current.first][current.second];
+            }
+            std::reverse(path.begin(), path.end()); // Đảo ngược đường đi để có thứ tự từ vị trí hiện tại đến mục tiêu
+            return;
+        }
 
+        // Kiểm tra các ô láng giềng và thêm chúng vào hàng đợi nếu chưa được ghé thăm
         for (int i = 0; i < 4; i++) {
             int i1 = top.first + tempY[i];
             int j1 = top.second + tempX[i];
 
             if (i1 >= 0 && i1 < 32 && j1 >= 0 && j1 < 30) {
-                if (map_data.tile[i1][j1] == 0 &&!visited[i1][j1]) {
+                if (map_data.tile[i1][j1] == 0 && !visited[i1][j1]) {
                     parent[i1][j1] = std::make_pair(top.first, top.second);
                     wait.push({i1, j1});
                 }
             }
         }
     }
-
-
-    std::pair<int, int> Newcurrent = {targetY/TILE_SIZE, targetX/TILE_SIZE};
-    while (Newcurrent.first >= tile_startY && Newcurrent.first < tile_endY && Newcurrent.second >= tile_startX && Newcurrent.second < tile_endX && Newcurrent!= std::make_pair(rect_.y/TILE_SIZE, rect_.x/TILE_SIZE)) {
-        path.push_back(Newcurrent);
-        Newcurrent = parent[Newcurrent.first][Newcurrent.second];
-    }
    // path.push_back({rect_.y/TILE_SIZE, rect_.x/TILE_SIZE});
-    std::reverse(path.begin(), path.end()); // Lật ngược chuỗi để có thứ tự từ start đến end
-//    while(!path.empty()){
-//        movent(map_data, path);
-//        path.erase(path.begin());
-//    }
+    //std::reverse(path.begin(), path.end()); // Lật ngược chuỗi để có thứ tự từ start đến end
 
+    return ;
 }
-void BulletObject::movent(const Map& map_data)
+void BulletObject::movent(const Map& map_data, int targetX, int targetY)
 {
-     if (path.empty()) return;
+//     if (path.empty()) return;
+//
+//    std::pair<int,int> nextPos = path.front();
+//    float dentaX=nextPos.first-rect_.y/TILE_SIZE;
+//    float dentaY=nextPos.second-rect_.x/TILE_SIZE;
+//
+////    rect_.x = rect_.x +y1*TILE_SIZE;
+////    rect_.y = rect_.y +x1*TILE_SIZE;
+//
+//    if(dentaX==1 && dentaY==0) {
+//            rect_.y+=BULLET_SPEED/2;
+//            rect_.x=rect_.x/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
+//    }
+//    if(dentaX==-1 && dentaY==0){
+//            rect_.y-=BULLET_SPEED/2;
+//            rect_.x=rect_.x/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
+//    }
+//    if(dentaX==0 && dentaY==1) {
+//            rect_.x+=BULLET_SPEED/2;
+//            rect_.y=rect_.y/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
+//    }
+//    if(dentaX==0 && dentaY==-1) {
+//            rect_.x-=BULLET_SPEED/2;
+//            rect_.y=rect_.y/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
+//    }
+//
+//    path.erase(path.begin());
 
-    std::pair<int,int> nextPos = path.front();
-    float dentaX=nextPos.first-rect_.y/TILE_SIZE;
-    float dentaY=nextPos.second-rect_.x/TILE_SIZE;
+    float speed= .8*BULLET_SPEED;
+    getAngle(map_data,targetX,targetY);
 
-//    rect_.x = rect_.x +y1*TILE_SIZE;
-//    rect_.y = rect_.y +x1*TILE_SIZE;
+//    angle_bullet += angle_change;
 
-    if(dentaX==1 && dentaY==0) {
-            rect_.y+=BULLET_SPEED/2;
-            rect_.x=rect_.x/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
-    }
-    if(dentaX==-1 && dentaY==0){
-            rect_.y-=BULLET_SPEED/2;
-            rect_.x=rect_.x/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
-    }
-    if(dentaX==0 && dentaY==1) {
-            rect_.x+=BULLET_SPEED/2;
-            rect_.y=rect_.y/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
-    }
-    if(dentaX==0 && dentaY==-1) {
-            rect_.x-=BULLET_SPEED/2;
-            rect_.y=rect_.y/TILE_SIZE*TILE_SIZE+TILE_SIZE/2;
-    }
+    float radians=angle_bullet;//*PI/ 180.0f;
 
-    path.erase(path.begin());
+    rect_.x-=sin(radians)*speed;
+    rect_.y+=cos(radians)*speed;
 }
+
+void BulletObject::getAngle(const Map& map_data,int targetX, int targetY)
+{
+    find_anyone(map_data,targetX,targetY);
+    int mouse_angle=0;
+    if(path.empty())
+    {
+        mouse_angle = (int)(atan2(rect_.y - targetY, rect_.x- targetX)* 180.0f/ PI);
+    }else{
+        int direction=0;
+        std::pair<int,int> parent = path.front();
+        int px=parent.first;
+        int py=parent.second;
+
+        if(px-rect_.x/TILE_SIZE==1) direction=3;
+        else if (px-rect_.x/TILE_SIZE==-1) direction=2;
+        else if(py-rect_.y/TILE_SIZE==1) direction=1;
+        else direction=0;
+
+
+        float yOffset=0;
+        float xOffset=0;
+
+        if (direction == 0)
+      {
+        yOffset = TILE_SIZE/3;
+        xOffset = TILE_SIZE/3;
+      } else if (direction == 1)
+      {
+        yOffset = -TILE_SIZE/3;
+        xOffset = -TILE_SIZE/3;
+      } else if (direction == 2)
+      {
+        yOffset = -TILE_SIZE/3;
+        xOffset = TILE_SIZE/3;
+      } else
+      {
+        yOffset = TILE_SIZE/3;
+        xOffset = -TILE_SIZE/3;
+      }
+       mouse_angle = (int)(atan2(rect_.y - (py*TILE_SIZE+TILE_SIZE/2), rect_.x- (px*TILE_SIZE+TILE_SIZE/2))* 180/ PI);
+    }
+
+    if (mouse_angle < 0)
+    {
+      mouse_angle += 360;
+    }
+    mouse_angle += 180;
+    mouse_angle = mouse_angle%360;
+    if (angle_bullet < 0)
+    {
+      angle_bullet += 360;
+    }
+    angle_bullet = angle_bullet %360;
+
+
+
+    float a = (mouse_angle - angle_bullet);
+    float b = (mouse_angle - angle_bullet + 360);
+    float c = (mouse_angle - angle_bullet-360);
+    float d;
+    if (abs(a) < abs(b) && abs(a) < abs(c))
+    {
+      d = a;
+    } else if (abs(b) < abs(a) && abs(b) < abs(c))
+    {
+      d=b;
+    } else
+    {
+      d=c;
+    }
+    if (d < 0)
+    {
+      angle_change = -ROTATION_SPEED;
+    } else
+    {
+      angle_change = ROTATION_SPEED;
+    }
+}
+
 
 
 void BulletObject::Bouncing_bullet(const Map& map_data) {

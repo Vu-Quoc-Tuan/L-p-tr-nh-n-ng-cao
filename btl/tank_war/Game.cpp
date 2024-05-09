@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game()//tất cả các ảnh và vị trí thì chưa được chỉnh sửa, chx them nhacj,mau
+Game::Game()
 {
 //phần button:
     //menu
@@ -8,7 +8,7 @@ Game::Game()//tất cả các ảnh và vị trí thì chưa được chỉnh s�
     g_button[1].set_rect(314,328);//button multiple
     g_button[2].set_rect(335,436);//button help
     g_button[3].set_rect(330,562);//button exit
-    g_button[4].set_rect(837,660);//button rank    chux suawr
+//    g_button[4].set_rect(837,660);//button rank    chux suawr
 
     //help
     g_button[5].set_rect(0,620);//button return
@@ -27,18 +27,18 @@ Game::Game()//tất cả các ảnh và vị trí thì chưa được chỉnh s�
     //in match
     g_button[13].set_rect(0,0);//button pause
 
-
 //phần Text:
     //score in single
     g_text[0].set_color(0,0,0);
+    g_text[6].set_color(0,0,0);
 
     //score in multiple
     g_text[1].set_color(0,0,0);
     g_text[2].set_color(0,0,0);
 
     //score in end
-    g_text[3].set_color(0,0,0); //single
-    g_text[4].set_color(0,0,0); //multiple
+    g_text[3].set_color(0,0,0);
+    g_text[4].set_color(0,0,0);
 
     //high score
     g_text[5].set_color(0,0,0);
@@ -55,6 +55,19 @@ void Game::set_render(SDL_Renderer* screen)
 
     g_player.set_player2(true);
     g_player.Loadimage_main(renderer);
+
+    bomb.load_ex(renderer);
+    bomb.set_clip();
+
+//armor
+    armor_tank[0].Loadimage_base("Image/bullet/armor.png",renderer);
+    armor_tank[0].set_rect(829,582);//xanh
+    armor_tank[1].Loadimage_base("Image/bullet/armor.png",renderer);
+    armor_tank[1].set_rect(14,582);//đỏ
+
+//score
+    g_text[4].Loadtext("HIGH SCORE!",renderer,Font3);
+
 }
 
 
@@ -65,7 +78,7 @@ OPTION Game::Show_menu()
     bgr.Loadimage_base("Image/background/start.png",renderer);
     bgr.setforbackground();
 
-    int status=5;
+    int status=4;
     int dem=1;
     int mouse_X,mouse_Y;
 
@@ -78,7 +91,7 @@ OPTION Game::Show_menu()
         g_button[1].Loadimage_base("Image/background/button/menu21.png",renderer);
         g_button[2].Loadimage_base("Image/background/button/menu31.png",renderer);
         g_button[3].Loadimage_base("Image/background/button/menu41.png",renderer);
-        g_button[4].Loadimage_base("Image/background/button/menu51.png",renderer);
+//        g_button[4].Loadimage_base("Image/background/button/menu51.png",renderer);
 
         while(SDL_PollEvent(&events)!=0)
         {
@@ -206,10 +219,12 @@ OPTION Game::Show_help() {
 OPTION Game::End_game()
 {
     g_sound.PlayOuttro();
-    if(g_score!=0){
-        g_text[3].Loadtext("YOU LOSE",renderer,Font4);
-    }else{
-        g_text[4].Loadtext("End Game",renderer,Font4);
+
+    if(g_score!=0) g_text[3].Loadtext("GAME OVER",renderer,Font4);
+    else {
+        if(score_1==5) g_text[3].Loadtext("PLAYER-1 WIN",renderer,Font4);
+        else if(score_2==5) g_text[3].Loadtext("PLAYER-2 WIN",renderer,Font4);
+        else  g_text[3].Loadtext("GAME OVER",renderer,Font4);
     }
 
     int status_begin=10;
@@ -224,7 +239,6 @@ OPTION Game::End_game()
         g_button[10].Loadimage_base("Image/background/button/end11.png",renderer);
         g_button[11].Loadimage_base("Image/background/button/end21.png",renderer);
         g_button[12].Loadimage_base("Image/background/button/end31.png",renderer);
-
 
         while(SDL_PollEvent(&events)!=0)
         {
@@ -261,7 +275,10 @@ OPTION Game::End_game()
                         if(Extension::pointed_to(mouse_X,mouse_Y,temp))/////
                         {
                             g_sound.PlayClick();
-                            if(i==10)      res=OPTION::SINGLEPLAYER;
+                            if(i==10)      {
+                                    if(g_score==0) res=OPTION::SINGLEPLAYER;
+                                    else res=OPTION::MULTIPLAYER;
+                            }
                             else if(i==11) res=OPTION::HOME;
                             else if(i==12) res=OPTION::EXIT_GAME;
                             g_button[i].Loadimage_base(("Image/background/button/end"+std::to_string(dem)+"3.png").c_str(),renderer);
@@ -273,11 +290,15 @@ OPTION Game::End_game()
                     break;
             }
         }
-        if(g_score!=0){
-            g_text[3].render_text(323,223,renderer);
-        }else{
-            g_text[4].render_text(323,223,renderer);
+
+        g_text[3].render_text(315,223,renderer);
+
+        if(Extension::check_highscore(g_score))
+        {
+            g_text[4].render_text(650,30,renderer);
+            Extension::save_score(g_score);
         }
+
         for(int i=status_begin;i<=status_end;i++) g_button[i].render(renderer);
 
         SDL_RenderPresent(renderer);
@@ -344,7 +365,10 @@ OPTION Game::Pause_game()
                             if(i==6)      res=OPTION::REPLAY;
                             else if(i==7) res=OPTION::CONTINUE;
                             else if(i==8) res=OPTION::HOME;
-                            else if(i==9) //TAWTR NHAC
+                            else if(i==9) {
+                                if(g_sound.checkmusic()>0) g_sound.mute();
+                                else g_sound.unmute();
+                            }
                             g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"3.png").c_str(),renderer);
                         }else{
                             g_button[i].Loadimage_base(("Image/background/button/pause"+std::to_string(dem)+"1.png").c_str(),renderer);
@@ -364,7 +388,7 @@ OPTION Game::Pause_game()
     return res;
 }
 
-OPTION Game::Play_single()//sẽ đổi map
+OPTION Game::Play_single()
 {
     Reset_game();
 
@@ -391,6 +415,7 @@ OPTION Game::Play_single()//sẽ đổi map
     {
         int staticks=SDL_GetTicks64();
         g_text[0].Loadtext("SCORE:"+std::to_string(g_score),renderer,Font3);
+        g_text[6].Loadtext("HP:"+ std::to_string(hp),renderer,Font3);
         g_button[13].Loadimage_base("Image/background/button/ingame1.png",renderer);
 
 
@@ -437,7 +462,7 @@ OPTION Game::Play_single()//sẽ đổi map
                     break;
 
             }
-            g_player.fire_action(renderer);
+            g_player.fire_action(renderer,&g_sound);
         }
 
         spawnTime++;
@@ -447,15 +472,13 @@ OPTION Game::Play_single()//sẽ đổi map
             spawnTime=0;
         }
         down_hp();
-        delete_threat();
         itemspawn++;
-        if(itemspawn>500 && list_item.size()<=5)
+        if(itemspawn>50 && list_item.size()<=5)
         {
             list_item.push_back(spawn_item());
             itemspawn=0;
         }
 
-        if(hp<=0) res=End_game();
 
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
@@ -464,17 +487,21 @@ OPTION Game::Play_single()//sẽ đổi map
         game_map.drawmap(renderer);
 
 
-        g_text[0].render_text(750,5,renderer);
+        g_text[0].render_text(745,5,renderer);
+        g_text[6].render_text(SCREEN_WIDTH/2-20,0,renderer);
 
         load_threat();
         load_item  (map_data);
         upgrade();
+        delete_threat();
 
         g_player.draw_bullet(renderer,map_data);
         g_player.Show(renderer);
         g_button[13].render(renderer);
+        if(armor1) armor_tank[1].render(renderer);
 
         SDL_RenderPresent(renderer);
+        if(hp<=0) res=End_game();
 
         int frame_tick=SDL_GetTicks64()-staticks;
         if(frame_tick<1000/FPS){
@@ -559,7 +586,7 @@ OPTION Game::Play_mutile()
                     break;
 
             }
-            g_player.fire_action(renderer);
+            g_player.fire_action(renderer,&g_sound);
         }
 
         itemspawn++;
@@ -585,8 +612,12 @@ OPTION Game::Play_mutile()
         g_text[1].render_text(80,647,renderer);
         g_text[2].render_text(782,647,renderer);
         g_button[13].render(renderer);
+        if(armor1) armor_tank[1].render(renderer);
+        if(armor2) armor_tank[0].render(renderer);
 
+        get_point_multiple();
         SDL_RenderPresent(renderer);
+        if(score_1==5 || score_2==5) res=End_game();
 
         int frame_tick=SDL_GetTicks64()-staticks;
         if(frame_tick<1000/FPS){
@@ -594,23 +625,34 @@ OPTION Game::Play_mutile()
         }
 
         g_player.Update_action(renderer,map_data);
-        get_point_multiple();
+        if(is_dead){
+            g_player.set_rect_player1(138,75);
+            g_player.set_rect_player2(735,585);
+            is_dead=false;
+        }
     }
     return res;
 }
 
 
 
-void Game::Reset_game()//chỉnh lại type_bullet,xoas ddan
+void Game::Reset_game()//xoas ddan
 {
+    is_dead=false;
     g_score=0;
     score_1=0;
     score_2=0;
     score_value1=0;
     score_value2=0;
     hp= 20;
+
     g_player.set_type_bullet1(normal);
     g_player.set_type_bullet2(normal);
+    g_player.set_rect_player1(138,75);
+    g_player.set_rect_player2(735,585);
+
+    armor1=false;
+    armor2=false;
     list_item.clear();
     list_threat.clear();
 }
@@ -657,13 +699,13 @@ void Game::load_item(const Map& map_data)
     for(item &temp: list_item)
     {
         temp.load_image_item(renderer);
-//        if(
-//            (map_data.tile[temp.get_rect_().x/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
-//            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
-//            map_data.tile[temp.get_rect_().x/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1 ||
-//            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1)
-//)
-//              list_item.erase(list_item.begin()+i);
+        if(
+            (map_data.tile[temp.get_rect_().x/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
+            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
+            map_data.tile[temp.get_rect_().x/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1 ||
+            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1)
+)
+              list_item.erase(list_item.begin()+i);
         temp.show_item(renderer);
         i++;
     }
@@ -684,9 +726,12 @@ void Game::upgrade()
             if (detail::check_collision(it->get_rect_(), g_player.get_rect_player1())) {
                 g_sound.PlayCollect();
                 g_player.set_type_bullet1(it->get_type());
+                if(it->get_type()==armor) armor1=true;
                 it = list_item.erase(it);
             } else if (detail::check_collision(it->get_rect_(), g_player.get_rect_player2())) {
+                g_sound.PlayCollect();
                 g_player.set_type_bullet2(it->get_type());
+                if(it->get_type()==armor) armor2=true;
                 it = list_item.erase(it);
             } else {
                 ++it;
@@ -714,7 +759,7 @@ Threat_object Game::spawnMonster()
     return monster;
 }
 
-void Game::delete_threat() {
+void Game::delete_threat() {//check lại tại sao quái chết ở 1 chỗ
     std::vector<BulletObject*> list1 = g_player.get_list1_();
 
     for (size_t i = 0; i < list_threat.size(); ) {
@@ -725,6 +770,10 @@ void Game::delete_threat() {
 
             if (detail::check_collision(temp1.get_rect_(), temp2->get_rect_())) {
                 g_score++;
+
+                bomb.set_rect(temp2->get_rect_().x,temp2->get_rect_().y);
+                bomb.Show_ex(renderer);
+
                 temp2->set_move(false);
                 list1.erase(list1.begin() + j);
                 list_threat.erase(list_threat.begin() + i);
@@ -746,10 +795,9 @@ void Game::down_hp()
         Threat_object temp= list_threat.at(i);
         if(detail::check_insize(temp.get_rect_(),g_player.get_rect_player1()))
         {
-            hp-=2;
+            if(!armor1) hp-=2;
+            armor1=false;
             list_threat.erase(list_threat.begin()+i);
-            //delete temp;
-            //temp=NULL;
         }
     }
 }
@@ -765,13 +813,27 @@ void Game::get_point_multiple()
         if (detail::check_collision(temp1->get_rect_(), g_player.get_rect_player1())
             && temp1->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
             g_sound.PlayT_dead();
+            bomb.set_rect(g_player.get_rect_player1().x,g_player.get_rect_player1().y);
+            bomb.Show_ex(renderer);
+
+            is_dead=true;
+
+            if(armor1) score_2--;
             score_value2++;
+            armor1=false;
             temp1->set_move(false);
             list1.erase(list1.begin() + j);
         } else if (detail::check_collision(temp1->get_rect_(), g_player.get_rect_player2())
                    && temp1->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
             g_sound.PlayT_dead();
+            bomb.set_rect(g_player.get_rect_player2().x,g_player.get_rect_player2().y);
+            bomb.Show_ex(renderer);
+
+            is_dead=true;
+
+            if(armor2) score_1--;
             score_value1++;
+            armor2=false;
             temp1->set_move(false);
             list1.erase(list1.begin() + j);
         }else j++;
@@ -782,13 +844,27 @@ void Game::get_point_multiple()
         if (detail::check_collision(temp2->get_rect_(), g_player.get_rect_player1())
             && temp2->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
             g_sound.PlayT_dead();
+            bomb.set_rect(g_player.get_rect_player1().x,g_player.get_rect_player1().y);
+            bomb.Show_ex(renderer);
+
+            is_dead=true;
+
+            if(armor1) score_2--;
             score_value2++;
+            armor1=false;
             temp2->set_move(false);
             list2.erase(list2.begin() + i);
         } else if (detail::check_collision(temp2->get_rect_(), g_player.get_rect_player2())
                    && temp2->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
             g_sound.PlayT_dead();
+            bomb.set_rect(g_player.get_rect_player2().x,g_player.get_rect_player2().y);
+            bomb.Show_ex(renderer);
+
+            is_dead=true;
+
+            if(armor2) score_1--;
             score_value1++;
+            armor2=false;
             temp2->set_move(false);
             list2.erase(list2.begin() + i);
         }else i++;

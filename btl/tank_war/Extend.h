@@ -3,7 +3,6 @@
 
 #include "Settings.h"
 
-
 namespace detail
 {
     bool check_collision (const SDL_Rect &object1,

@@ -15,7 +15,7 @@ LText::LText()
 
 bool LText::Loadtext(std::string path,SDL_Renderer* screen,int Type_font)
 {
-    free();
+//    free();
 
     SDL_Surface* temp=NULL;
     if(Type_font==Font3){
@@ -45,12 +45,13 @@ void LText::set_color(Uint8 red, Uint8 green, Uint8 blue)
 void LText::render_text(int x_pos, int y_pos, SDL_Renderer* screen)
 {
     if (mTexture == NULL) {
-        std::cerr << "Error: Texture is not loaded!" << std::endl;
+//        std::cerr << "Error: Texture is not loaded!" << std::endl;
         return;
     }
 
     renderQuad= {x_pos, y_pos, weight,height};
     SDL_RenderCopyEx(screen,mTexture,NULL,&renderQuad,0.0,NULL,SDL_FLIP_NONE);
+    free();
 }
 
 void LText::free()

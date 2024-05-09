@@ -60,7 +60,6 @@ void Threat_object::Show(SDL_Renderer* screen)
     SDL_Rect renderquad={x_pos_,y_pos_,weight_frame,height_frame};
     SDL_Rect* currentclip= &frame_clip[frame_];
     SDL_RenderCopy(screen,texture,currentclip,&renderquad);
-    SDL_DestroyTexture(texture);
 }
 
 

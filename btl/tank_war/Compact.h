@@ -10,6 +10,7 @@
 #include "Timer.h"
 #include "Text.h"
 #include "Sound.h"
+#include "Explosion.h"
 
 enum OPTION
 {
@@ -37,6 +38,8 @@ namespace SDLWin
 namespace Extension
 {
     bool pointed_to(int x_pos, int y_pos, SDL_Rect rect);
+    bool check_highscore(int score);
+    void save_score(int score);
 }
 
 #endif // COMPACT_H_INCLUDED

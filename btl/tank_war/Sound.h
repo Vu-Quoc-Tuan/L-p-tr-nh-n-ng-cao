@@ -24,6 +24,10 @@ public:
     void PlayOuttro() {Mix_PlayMusic(Outtro,-1);}
     void Haltmusic()  {Mix_HaltMusic();}
 
+    int checkmusic() {return Mix_GetMusicVolume(Intro);}
+    void mute () {Mix_Volume(-1, 0);Mix_VolumeMusic(0);}
+    void unmute(){Mix_Volume(-1,64);Mix_VolumeMusic(64);}
+
 private:
     Mix_Music* Intro;
 
