@@ -29,9 +29,8 @@ public:
     void load_title(SDL_Renderer* screen);
     void drawmap(SDL_Renderer*screen);
     Map get_datamap() const {return game_map_;}
-   // void set_mapdata(const Map& nexmap) {game_map_=nexmap;}
+
 private:
-   // std::vector<std::string> data_;
     Graphics temp;
     Map game_map_;
 };

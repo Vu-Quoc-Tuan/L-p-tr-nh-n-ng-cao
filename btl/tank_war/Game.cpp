@@ -162,7 +162,8 @@ OPTION Game::Show_menu()
     return res;
 }
 
-OPTION Game::Show_help() {
+OPTION Game::Show_help()
+{
     Graphics i_help;
     i_help.Loadimage_base("Image/background/help.png", renderer);
     i_help.setforbackground();
@@ -276,8 +277,8 @@ OPTION Game::End_game()
                         {
                             g_sound.PlayClick();
                             if(i==10)      {
-                                    if(g_score==0) res=OPTION::SINGLEPLAYER;
-                                    else res=OPTION::MULTIPLAYER;
+                                    if(score_1==5 || score_2==5) res=OPTION::MULTIPLAYER;
+                                    else res=OPTION::SINGLEPLAYER;
                             }
                             else if(i==11) res=OPTION::HOME;
                             else if(i==12) res=OPTION::EXIT_GAME;
@@ -424,14 +425,6 @@ OPTION Game::Play_single()
             switch (events.type){
                 case SDL_QUIT:
                     return OPTION::EXIT_GAME;
-//                case SDL_KEYDOWN:
-//                    if (events.key.keysym.sym == SDLK_p){
-//                        OPTION current = Pause_game();
-//                        if(current==REPLAY)     res= OPTION::SINGLEPLAYER;
-//                        else if(current==HOME)  res=OPTION::HOME;
-//                    }
-//                    break;
-
                 case SDL_MOUSEMOTION:{
                     mouse_X=events.motion.x;
                     mouse_Y=events.motion.y;
@@ -487,8 +480,7 @@ OPTION Game::Play_single()
         game_map.drawmap(renderer);
 
 
-        g_text[0].render_text(745,5,renderer);
-        g_text[6].render_text(SCREEN_WIDTH/2-20,0,renderer);
+        g_text[0].render_text(740,5,renderer);
 
         load_threat();
         load_item  (map_data);
@@ -497,7 +489,12 @@ OPTION Game::Play_single()
 
         g_player.draw_bullet(renderer,map_data);
         g_player.Show(renderer);
+
         g_button[13].render(renderer);
+
+        draw_hp();
+        g_text[6].render_text(SCREEN_WIDTH/2-20,18,renderer);
+
         if(armor1) armor_tank[1].render(renderer);
 
         SDL_RenderPresent(renderer);
@@ -538,12 +535,12 @@ OPTION Game::Play_mutile()
         int staticks=SDL_GetTicks64();
 
         if(score_value1!=0) {
-            score_1+=score_value1%2;
+            score_1+=1;
             score_value1=0;
         }
         if(score_value2!=0)
         {
-            score_2+=score_value2%2;
+            score_2+=1;
             score_value2=0;
         }
         g_text[1].Loadtext(std::to_string(score_1),renderer,Font3);
@@ -628,6 +625,8 @@ OPTION Game::Play_mutile()
         if(is_dead){
             g_player.set_rect_player1(138,75);
             g_player.set_rect_player2(735,585);
+            g_player.delete_bullet(0,1);
+            g_player.delete_bullet(0,2);
             is_dead=false;
         }
     }
@@ -636,7 +635,7 @@ OPTION Game::Play_mutile()
 
 
 
-void Game::Reset_game()//xoas ddan
+void Game::Reset_game()
 {
     is_dead=false;
     g_score=0;
@@ -648,6 +647,9 @@ void Game::Reset_game()//xoas ddan
 
     g_player.set_type_bullet1(normal);
     g_player.set_type_bullet2(normal);
+    g_player.delete_bullet(0,1);
+    g_player.delete_bullet(0,2);
+
     g_player.set_rect_player1(138,75);
     g_player.set_rect_player2(735,585);
 
@@ -759,7 +761,8 @@ Threat_object Game::spawnMonster()
     return monster;
 }
 
-void Game::delete_threat() {//check lại tại sao quái chết ở 1 chỗ
+void Game::delete_threat()
+{//check lại tại sao quái chết ở 1 chỗ
     std::vector<BulletObject*> list1 = g_player.get_list1_();
 
     for (size_t i = 0; i < list_threat.size(); ) {
@@ -795,11 +798,20 @@ void Game::down_hp()
         Threat_object temp= list_threat.at(i);
         if(detail::check_insize(temp.get_rect_(),g_player.get_rect_player1()))
         {
-            if(!armor1) hp-=2;
+            if(!armor1) hp-=1;
             armor1=false;
             list_threat.erase(list_threat.begin()+i);
         }
     }
+}
+
+void Game::draw_hp()
+{
+    SDL_Rect line_bar={280,18,360,24};
+    SDL_RenderDrawRect(renderer,&line_bar);
+    SDL_Rect heal_bar={280,18,hp*18,24};
+    SDL_SetRenderDrawColor(renderer,250,0,0,0);
+    SDL_RenderFillRect(renderer,&heal_bar);
 }
 
 void Game::get_point_multiple()
@@ -818,10 +830,12 @@ void Game::get_point_multiple()
 
             is_dead=true;
 
-            if(armor1) score_2--;
+            if(armor1){
+                score_2--;
+            }
             score_value2++;
             armor1=false;
-            temp1->set_move(false);
+            g_player.delete_bullet(j,1);
             list1.erase(list1.begin() + j);
         } else if (detail::check_collision(temp1->get_rect_(), g_player.get_rect_player2())
                    && temp1->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
@@ -831,10 +845,12 @@ void Game::get_point_multiple()
 
             is_dead=true;
 
-            if(armor2) score_1--;
+            if(armor2){
+                score_1--;
+            }
             score_value1++;
             armor2=false;
-            temp1->set_move(false);
+            g_player.delete_bullet(j,1);
             list1.erase(list1.begin() + j);
         }else j++;
     }
@@ -849,10 +865,12 @@ void Game::get_point_multiple()
 
             is_dead=true;
 
-            if(armor1) score_2--;
+            if(armor1){
+                score_2--;
+            }
             score_value2++;
             armor1=false;
-            temp2->set_move(false);
+            g_player.delete_bullet(i,2);
             list2.erase(list2.begin() + i);
         } else if (detail::check_collision(temp2->get_rect_(), g_player.get_rect_player2())
                    && temp2->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
@@ -862,10 +880,12 @@ void Game::get_point_multiple()
 
             is_dead=true;
 
-            if(armor2) score_1--;
+            if(armor2){
+                score_1--;
+            }
             score_value1++;
             armor2=false;
-            temp2->set_move(false);
+            g_player.delete_bullet(i,2);
             list2.erase(list2.begin() + i);
         }else i++;
     }

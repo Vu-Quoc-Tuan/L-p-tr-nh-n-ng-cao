@@ -34,7 +34,6 @@ void Graphics::render(SDL_Renderer* dest)
 
         SDL_Rect renderquad={rect_.x,rect_.y,rect_.w,rect_.h};
         SDL_RenderCopy(dest,texture,NULL,&renderquad);
-        //Free();//test
     }
 
 void Graphics::Free()

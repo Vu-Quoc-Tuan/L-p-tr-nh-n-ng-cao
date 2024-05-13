@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player()////////
+Player::Player()
 {
     x_pos_=150;         x_pos2_=200;
     y_pos_=80;          y_pos2_=80;
@@ -107,7 +107,8 @@ void Player::fire_action( SDL_Renderer* screen, Sound* p_sound)
         bullet_temp->set_move(true);
         bullet_temp->set_angle_bullet(angle);
 
-        bullet_list.push_back(bullet_temp);
+        if(bullet_list.size()==0) bullet_list.push_back(bullet_temp);
+        else delete bullet_temp;
     }
 
 //xe2
@@ -127,7 +128,8 @@ void Player::fire_action( SDL_Renderer* screen, Sound* p_sound)
             bullet_temp2->set_move(true);
             bullet_temp2->set_angle_bullet(angle2);
 
-            bullet_list2.push_back(bullet_temp2);
+            if(bullet_list2.size()==0) bullet_list2.push_back(bullet_temp2);
+            else delete bullet_temp2;
         }
     }
 }
@@ -304,15 +306,15 @@ void Player::Show(SDL_Renderer* screen)
 }
 
 //BulletObject
-void Player::draw_bullet(SDL_Renderer* screen,const Map& map_data){
+void Player::draw_bullet(SDL_Renderer* screen,const Map& map_data)
+{
     for(int i=0;i<(int)bullet_list.size();i++){
         BulletObject* bullet_now=bullet_list[i];
         if(bullet_now!=NULL){
             if(bullet_now->get_move()){
                 bullet_now->control_bullet(map_data, x_pos2_, y_pos2_);
-//                if(type_bullet==1) bullet_now->movent(map_data);
                 bullet_now->render_bullet(screen);
-                bullet_now->time_bullet(BULLET_LIFETIME);
+                if(type_bullet!=rocket) bullet_now->time_bullet(BULLET_LIFETIME);
             }else{
                 delete_bullet(i,1);
             }
@@ -324,9 +326,8 @@ void Player::draw_bullet(SDL_Renderer* screen,const Map& map_data){
         if(bullet2_now!=NULL){
             if(bullet2_now->get_move()){
                 bullet2_now->control_bullet(map_data, x_pos_,y_pos_);
-//                if(type_bullet2==1) bullet2_now->movent(map_data);
                 bullet2_now->render_bullet(screen);
-                bullet2_now->time_bullet(BULLET_LIFETIME);
+                if(type_bullet!=rocket) bullet2_now->time_bullet(BULLET_LIFETIME);
             }else{
                 delete_bullet(j,2);
             }

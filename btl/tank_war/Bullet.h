@@ -29,6 +29,7 @@ public:
     void movent(const Map& map_data ,int targetX, int targetY);
     void getAngle(const Map& map_data,int targetX, int targetY);
 
+
     void set_move (const bool& status) {is_move=status;}
     bool get_move () const {return is_move;}
 

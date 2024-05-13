@@ -24,7 +24,9 @@ private:
 
     //dead
     void down_hp();
+    void draw_hp();
     void get_point_multiple();
+
     bool armor1;
     bool armor2;
     Graphics armor_tank[2];

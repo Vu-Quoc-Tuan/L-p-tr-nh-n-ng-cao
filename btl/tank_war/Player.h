@@ -24,9 +24,9 @@ public:
     void set_player2 (const bool value) {appear=value;}
 
     SDL_Rect get_rect_player1() const {return rect_;}
-    void set_rect_player1(float x, float y) {x_pos_ =x; y_pos_=y;}
+    void set_rect_player1(float x, float y) {x_pos_ =x; y_pos_=y; angle=0;}
     SDL_Rect get_rect_player2() const {return rect2_;}
-    void set_rect_player2(float x, float y) {x_pos2_ =x; y_pos2_=y;}
+    void set_rect_player2(float x, float y) {x_pos2_ =x; y_pos2_=y;angle2=0;}
 
     void set_type_bullet1(const int& value) {type_bullet=value;}
     void set_type_bullet2(const int& value) {type_bullet2=value;}

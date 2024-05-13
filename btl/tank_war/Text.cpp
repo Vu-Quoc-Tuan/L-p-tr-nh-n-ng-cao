@@ -15,8 +15,6 @@ LText::LText()
 
 bool LText::Loadtext(std::string path,SDL_Renderer* screen,int Type_font)
 {
-//    free();
-
     SDL_Surface* temp=NULL;
     if(Type_font==Font3){
         temp=TTF_RenderText_Solid(font32,path.c_str(),c_text);
