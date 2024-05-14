@@ -153,7 +153,7 @@
 	"Bullet.h"
 	"Sound.h"
 
-1715415523 f:\game\tesst\tank_war\bullet.h
+1715699557 f:\game\tesst\tank_war\bullet.h
 	"Graphics.h"
 	"Map.h"
 	"Extend.h"
@@ -167,8 +167,7 @@
 1715156931 f:\game\tesst\tank_war\sound.h
 	"Settings.h"
 
-1713249250 f:\game\tesst\tank_war\threat.h
-	"Graphics.h"
+1715701806 f:\game\tesst\tank_war\threat.h
 	"Settings.h"
 
 1714022458 f:\game\tesst\tank_war\kit.h
@@ -186,7 +185,7 @@
 1715415408 source:f:\game\tesst\tank_war\extend.cpp
 	"Extend.h"
 
-1715612195 source:f:\game\tesst\tank_war\graphics.cpp
+1715612801 source:f:\game\tesst\tank_war\graphics.cpp
 	"Graphics.h"
 
 1714803048 source:f:\game\tesst\tank_war\main.cpp
@@ -201,19 +200,19 @@
 1715087163 source:f:\game\tesst\tank_war\sound.cpp
 	"Sound.h"
 
-1715612195 source:f:\game\tesst\tank_war\text.cpp
+1715693932 source:f:\game\tesst\tank_war\text.cpp
 	"Text.h"
 
-1715262649 source:f:\game\tesst\tank_war\threat.cpp
+1715701874 source:f:\game\tesst\tank_war\threat.cpp
 	"Threat.h"
 
 1714377068 source:f:\game\tesst\tank_war\timer.cpp
 	"Timer.h"
 
-1715592215 source:f:\game\tesst\tank_war\bullet.cpp
+1715699733 source:f:\game\tesst\tank_war\bullet.cpp
 	"Bullet.h"
 
-1715612559 source:f:\game\tesst\tank_war\game.cpp
+1715700598 source:f:\game\tesst\tank_war\game.cpp
 	"Game.h"
 
 1715140731 source:f:\game\tesst\tank_war\kit.cpp

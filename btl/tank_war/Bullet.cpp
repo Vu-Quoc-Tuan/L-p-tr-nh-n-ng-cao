@@ -10,13 +10,14 @@ BulletObject::BulletObject()
 
     type_bullet=normal;
     angle_change=0;
+    life_rocket=0;
 }
 
 bool BulletObject::load_image_bullet(SDL_Renderer* screen)
 {
     bool temp;
     if(type_bullet==rocket){
-        temp=Graphics::Loadimage_base("Image/bullet/bullet1.png",screen);
+        temp=Graphics::Loadimage_base("Image/bullet/rocket.png",screen);
 
     }else if(type_bullet==laser){
         temp=Graphics::Loadimage_base("Image/bullet/lazer.png",screen);
@@ -97,6 +98,9 @@ void BulletObject::find_anyone(const Map& map_data, int targetX, int targetY)
 }
 void BulletObject::movent(const Map& map_data, int targetX, int targetY)
 {
+    life_rocket++;
+    if(life_rocket==100) is_move=false;
+
     float speed = 0.8 * BULLET_SPEED;
     getAngle(map_data, targetX, targetY);
 

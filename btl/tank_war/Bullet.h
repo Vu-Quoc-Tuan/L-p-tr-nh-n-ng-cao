@@ -52,6 +52,7 @@ private:
     int angle_bullet;
 
     int type_bullet;
+    int life_rocket;
 
     std::chrono::high_resolution_clock::time_point start_time;
     std::vector<std::pair<int, int>> path;

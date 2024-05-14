@@ -2,6 +2,7 @@
 
 Threat_object::Threat_object()
 {
+    th_texture=NULL;
     x_value_=0;
     y_value_=0;
     x_pos_=0;
@@ -12,12 +13,21 @@ Threat_object::Threat_object()
 }
 bool Threat_object::Loadimage_monster(SDL_Renderer* screen)
 {
-    bool temp=Loadimage_base("Image/threat/quai2.png",screen);
+    if(th_texture==NULL)
+    {
+        th_texture = IMG_LoadTexture(screen, "Image/threat/quai2.png");
+        if (th_texture == NULL){
+            std::cerr << "Unable to create texture from threat! SDL Error: " << SDL_GetError() << std::endl;
+            return false;
+        }
 
-    height_frame=rect_.h;
-    weight_frame=rect_.w/8;
+        SDL_QueryTexture(th_texture, NULL, NULL, &th_rect.w, &th_rect.h);
+    }
 
-    return temp;
+    height_frame=th_rect.h;
+    weight_frame=th_rect.w/8;
+
+    return true;
 }
 
 void Threat_object::set_clip()
@@ -56,10 +66,10 @@ void Threat_object::Show(SDL_Renderer* screen)
 {
     frame_++;
     frame_=frame_%8;
-    rect_.x=x_pos_;rect_.y=y_pos_;
-    SDL_Rect renderquad={x_pos_,y_pos_,weight_frame,height_frame};
+
+    renderquad={x_pos_,y_pos_,weight_frame,height_frame};
     SDL_Rect* currentclip= &frame_clip[frame_];
-    SDL_RenderCopy(screen,texture,currentclip,&renderquad);
+    SDL_RenderCopy(screen,th_texture,currentclip,&renderquad);
 }
 
 

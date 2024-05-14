@@ -762,7 +762,7 @@ Threat_object Game::spawnMonster()
 }
 
 void Game::delete_threat()
-{//check lại tại sao quái chết ở 1 chỗ
+{
     std::vector<BulletObject*> list1 = g_player.get_list1_();
 
     for (size_t i = 0; i < list_threat.size(); ) {
@@ -771,7 +771,7 @@ void Game::delete_threat()
         for (size_t j = 0; j < list1.size(); ) {
             BulletObject* temp2 = list1.at(j);
 
-            if (detail::check_collision(temp1.get_rect_(), temp2->get_rect_())) {
+            if (detail::check_collision(temp1.get_rect_threat(), temp2->get_rect_())) {
                 g_score++;
 
                 bomb.set_rect(temp2->get_rect_().x,temp2->get_rect_().y);
@@ -796,7 +796,7 @@ void Game::down_hp()
     for(int i=0;i<list_threat.size();i++)
     {
         Threat_object temp= list_threat.at(i);
-        if(detail::check_insize(temp.get_rect_(),g_player.get_rect_player1()))
+        if(detail::check_insize(temp.get_rect_threat(),g_player.get_rect_player1()))
         {
             if(!armor1) hp-=1;
             armor1=false;
