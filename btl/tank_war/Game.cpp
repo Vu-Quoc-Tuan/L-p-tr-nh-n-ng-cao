@@ -702,11 +702,11 @@ void Game::load_item(const Map& map_data)
     {
         temp.load_image_item(renderer);
         if(
-            (map_data.tile[temp.get_rect_().x/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
-            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][temp.get_rect_().y/TILE_SIZE]==1 ||
-            map_data.tile[temp.get_rect_().x/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1 ||
-            map_data.tile[(temp.get_rect_().x+temp.get_rect_().w)/TILE_SIZE][(temp.get_rect_().y+temp.get_rect_().h)/TILE_SIZE]==1)
-)
+            (map_data.tile[(temp.get_rect_().y-5)/TILE_SIZE][(temp.get_rect_().x-5)/TILE_SIZE]==1 ||
+            map_data.tile[(temp.get_rect_().y+temp.get_rect_().h+5)/TILE_SIZE][(temp.get_rect_().x-5)/TILE_SIZE]==1 ||
+            map_data.tile[(temp.get_rect_().y-5)/TILE_SIZE][(temp.get_rect_().x+temp.get_rect_().w+5)/TILE_SIZE]==1 ||
+            map_data.tile[(temp.get_rect_().y+temp.get_rect_().h+5)/TILE_SIZE][(temp.get_rect_().x+temp.get_rect_().w+5)/TILE_SIZE]==1)
+            )
               list_item.erase(list_item.begin()+i);
         temp.show_item(renderer);
         i++;
@@ -822,6 +822,23 @@ void Game::get_point_multiple()
     for (size_t j = 0; j < list1.size(); ) {
         BulletObject* temp1 = list1.at(j);
 
+        if(temp1->get_type_bullet()==rocket && detail::get_distance(temp1->get_rect_(), g_player.get_rect_player2())>=300)
+        {
+            g_sound.PlayT_dead();
+            bomb.set_rect(g_player.get_rect_player1().x,g_player.get_rect_player1().y);
+            bomb.Show_ex(renderer);
+
+            is_dead=true;
+
+            if(armor1){
+                score_2--;
+            }
+            score_value2++;
+            armor1=false;
+            g_player.delete_bullet(j,1);
+            list1.erase(list1.begin() + j);
+        }
+
         if (detail::check_collision(temp1->get_rect_(), g_player.get_rect_player1())
             && temp1->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {
             g_sound.PlayT_dead();
@@ -856,6 +873,23 @@ void Game::get_point_multiple()
     }
     for (size_t i = 0; i < list2.size(); ) {
         BulletObject* temp2 = list2.at(i);
+
+        if(temp2->get_type_bullet()==rocket && detail::get_distance(temp2->get_rect_(), g_player.get_rect_player1())>=300)
+        {
+            g_sound.PlayT_dead();
+            bomb.set_rect(g_player.get_rect_player2().x,g_player.get_rect_player2().y);
+            bomb.Show_ex(renderer);
+
+            is_dead=true;
+
+            if(armor2){
+                score_1--;
+            }
+            score_value1++;
+            armor2=false;
+            g_player.delete_bullet(i,2);
+            list2.erase(list2.begin() + i);
+        }
 
         if (detail::check_collision(temp2->get_rect_(), g_player.get_rect_player1())
             && temp2->getDistanceFromSpawnPoint()>MIN_DISTANCE_FROM_SPAWN_POINT) {

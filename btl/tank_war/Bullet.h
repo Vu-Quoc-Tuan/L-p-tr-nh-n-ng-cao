@@ -37,6 +37,7 @@ public:
                                               spawn_x_=rect_.x;
                                               spawn_y_=rect_.y;}
     void set_type_bullet (const int& value) {type_bullet  = value;}
+    int get_type_bullet() const {return type_bullet;}
 
 
     float getDistanceFromSpawnPoint() const {

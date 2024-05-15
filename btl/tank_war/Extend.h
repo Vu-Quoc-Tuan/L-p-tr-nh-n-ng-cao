@@ -9,7 +9,8 @@ namespace detail
                           const SDL_Rect &object2);
     bool check_insize(const SDL_Rect &object1,
                       const SDL_Rect &object2);
-
+    int get_distance(const SDL_Rect &object1,
+                      const SDL_Rect &object2 );
 }
 
 static  SDL_Event events;

@@ -156,15 +156,15 @@ int height_min=rect_.h> TILE_SIZE ? rect_.h : TILE_SIZE;
 
             if(map_data.tile[y1][x2]!=0 || map_data.tile[y2][x2]!=0 || map_data.tile[y3][x2]!=0)
             {
-                x_pos_=x2*TILE_SIZE;
-                x_pos_-=rect_.w+1;
+//                x_pos_=x2*TILE_SIZE;
+//                x_pos_-=rect_.w+1;
                 x_value_=0;
             }
         }else if(x_value_<0){
 
             if(map_data.tile[y1][x1]!=0 || map_data.tile[y2][x1]!=0 || map_data.tile[y3][x1]!=0)
             {
-                x_pos_=(x1+1)*TILE_SIZE;
+//                x_pos_=(x1+1)*TILE_SIZE;
                 x_value_=0;
             }
         }
@@ -183,8 +183,8 @@ int weight_min=rect_.w > TILE_SIZE ? rect_.w : TILE_SIZE;
 
             if(map_data.tile[y2][x1]!=0 || map_data.tile[y2][x2]!=0 || map_data.tile[y2][x3]!=0)
             {
-                y_pos_=y2*TILE_SIZE;
-                y_pos_-=rect_.h+1;
+//                y_pos_=y2*TILE_SIZE;
+//                y_pos_-=rect_.h+1;
                 y_value_=0;
             }
 
@@ -193,7 +193,7 @@ int weight_min=rect_.w > TILE_SIZE ? rect_.w : TILE_SIZE;
             if(map_data.tile[y1][x1]!=0 || map_data.tile[y1][x2]!=0 || map_data.tile[y1][x3]!=0)
             {
                 y_value_=0;
-                y_pos_=(y1+1)*TILE_SIZE;
+//                y_pos_=(y1+1)*TILE_SIZE;
             }
         }
     }
@@ -233,15 +233,15 @@ int height2_min=rect2_.h > TILE_SIZE ? rect2_.h : TILE_SIZE;
 
             if(map_data.tile[y1_][x2_]!=0 || map_data.tile[y2_][x2_]!=0 || map_data.tile[y3_][x2_]!=0)
             {
-                x_pos2_=x2_*TILE_SIZE;
-                x_pos2_-=rect2_.w+1;
+//                x_pos2_=x2_*TILE_SIZE;
+//                x_pos2_-=rect2_.w+1;
                 x_value2_=0;
             }
         }else if(x_value2_<0){
 
             if(map_data.tile[y1_][x1_]!=0 || map_data.tile[y2_][x1_]!=0 || map_data.tile[y3_][x1_]!=0)
             {
-                x_pos2_=(x1_+1)*TILE_SIZE;
+//                x_pos2_=(x1_+1)*TILE_SIZE;
                 x_value2_=0;
             }
         }
@@ -260,8 +260,8 @@ int weight2_min=rect2_.w > TILE_SIZE ? rect2_.w : TILE_SIZE;
 
             if(map_data.tile[y2_][x1_]!=0 || map_data.tile[y2_][x2_]!=0 || map_data.tile[y2_][x3_]!=0)
             {
-                y_pos2_=y2_*TILE_SIZE;
-                y_pos2_-=rect2_.h+1;
+//                y_pos2_=y2_*TILE_SIZE;
+//                y_pos2_-=rect2_.h+1;
                 y_value2_=0;
             }
 
@@ -270,7 +270,7 @@ int weight2_min=rect2_.w > TILE_SIZE ? rect2_.w : TILE_SIZE;
             if(map_data.tile[y1_][x1_]!=0 || map_data.tile[y1_][x2_]!=0 || map_data.tile[y1_][x3_]!=0)
             {
                 y_value2_=0;
-                y_pos2_=(y1_+1)*TILE_SIZE;
+//                y_pos2_=(y1_+1)*TILE_SIZE;
             }
         }
     }

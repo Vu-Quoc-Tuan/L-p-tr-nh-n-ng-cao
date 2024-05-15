@@ -71,4 +71,9 @@ bool detail::check_insize(const SDL_Rect &object1,
     return false;
 }
 
+int detail::get_distance(const SDL_Rect &object1,
+                         const SDL_Rect &object2)
+{
+    return std::sqrt((object1.x-object2.x)*(object1.x-object2.x)+(object1.y-object2.y)*(object1.y-object2.y));
+}
 

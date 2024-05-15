@@ -53,6 +53,8 @@ void BulletObject::through_wall()
 //đang
 void BulletObject::find_anyone(const Map& map_data, int targetX, int targetY)
 {
+    if(std::sqrt((targetX-rect_.x)*(targetX-rect_.x)+(targetY-rect_.y)*(targetY-rect_.y))>=300) return;
+
     path.clear();
 
     bool visited[tile_endY][tile_endX] = {{false}};
@@ -88,12 +90,9 @@ void BulletObject::find_anyone(const Map& map_data, int targetX, int targetY)
         path.push_back(Newcurrent);
         Newcurrent = parent[Newcurrent.first][Newcurrent.second];
     }
-   // path.push_back({rect_.y/TILE_SIZE, rect_.x/TILE_SIZE});
+
     std::reverse(path.begin(), path.end()); // Lật ngược chuỗi để có thứ tự từ start đến end
-//    while(!path.empty()){
-//        movent(map_data, path);
-//        path.erase(path.begin());
-//    }
+
 
 }
 void BulletObject::movent(const Map& map_data, int targetX, int targetY)
@@ -147,7 +146,6 @@ void BulletObject::getAngle(const Map& map_data, int targetX, int targetY)
             yOffset = TILE_SIZE/3;
             xOffset = -TILE_SIZE/3;
           }
-
 
           mouse_angle = (int)(atan2(rect_.y - (nextPos.first*TILE_SIZE+TILE_SIZE/2+yOffset), rect_.x- (nextPos.second*TILE_SIZE+TILE_SIZE/2+xOffset))* 180/ PI);
     }

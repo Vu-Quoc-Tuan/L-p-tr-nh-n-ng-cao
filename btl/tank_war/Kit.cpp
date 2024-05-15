@@ -31,8 +31,8 @@ void item::set_distination(const Map& map_data)
 {
     bool check=false;
         srand(time(NULL));
-        int tempx=rand()%706+90;
-        int tempy=rand()%601+45;
+        int tempx=rand()%706+80;
+        int tempy=rand()%601+35;
 
             rect_.x=tempx;
             rect_.y=tempy;
